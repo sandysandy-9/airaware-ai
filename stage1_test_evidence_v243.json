@@ -1,0 +1,3867 @@
+{
+  "metadata": {
+    "title": "AirAware AI Stage 1 Mathematical Test Evidence Dataset",
+    "specification_version": "2.4.3",
+    "generated_at_utc": "2026-11-24T08:25:12.757311+00:00",
+    "g_max_seconds": 14400.0,
+    "window_24h_duration_seconds": 86400.0,
+    "window_8h_duration_seconds": 28800.0
+  },
+  "test_cases": [
+    {
+      "test_id": "TEST-01",
+      "name": "TEST-01: Constant Concentration (24h)",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 25,
+      "valid_points_count": 25,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T15:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T16:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T17:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T19:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T20:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T21:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T22:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T23:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T00:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T01:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T03:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T04:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T05:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T06:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T07:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T08:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T09:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T10:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T11:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T12:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T13:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 50.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T15:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T15:00:00+00:00",
+          "end_time": "2026-11-23T16:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T16:00:00+00:00",
+          "end_time": "2026-11-23T17:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T17:00:00+00:00",
+          "end_time": "2026-11-23T18:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T18:00:00+00:00",
+          "end_time": "2026-11-23T19:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T19:00:00+00:00",
+          "end_time": "2026-11-23T20:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T20:00:00+00:00",
+          "end_time": "2026-11-23T21:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T21:00:00+00:00",
+          "end_time": "2026-11-23T22:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T22:00:00+00:00",
+          "end_time": "2026-11-23T23:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T23:00:00+00:00",
+          "end_time": "2026-11-24T00:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T00:00:00+00:00",
+          "end_time": "2026-11-24T01:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T01:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T02:00:00+00:00",
+          "end_time": "2026-11-24T03:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T03:00:00+00:00",
+          "end_time": "2026-11-24T04:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T04:00:00+00:00",
+          "end_time": "2026-11-24T05:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T05:00:00+00:00",
+          "end_time": "2026-11-24T06:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T06:00:00+00:00",
+          "end_time": "2026-11-24T07:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T07:00:00+00:00",
+          "end_time": "2026-11-24T08:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:00:00+00:00",
+          "end_time": "2026-11-24T09:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T09:00:00+00:00",
+          "end_time": "2026-11-24T10:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T10:00:00+00:00",
+          "end_time": "2026-11-24T11:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T11:00:00+00:00",
+          "end_time": "2026-11-24T12:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T12:00:00+00:00",
+          "end_time": "2026-11-24T13:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T13:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 180000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 86400.0,
+      "coverage_percentage": 100.0,
+      "total_integrated_concentration": 4320000.0,
+      "time_weighted_mean": 50.0,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-02",
+      "name": "TEST-02: Linear Concentration Increase (24h)",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 25,
+      "valid_points_count": 25,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 20.0
+        },
+        {
+          "timestamp": "2026-11-23T15:00:00+00:00",
+          "concentration": 22.0
+        },
+        {
+          "timestamp": "2026-11-23T16:00:00+00:00",
+          "concentration": 24.0
+        },
+        {
+          "timestamp": "2026-11-23T17:00:00+00:00",
+          "concentration": 26.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": 28.0
+        },
+        {
+          "timestamp": "2026-11-23T19:00:00+00:00",
+          "concentration": 30.0
+        },
+        {
+          "timestamp": "2026-11-23T20:00:00+00:00",
+          "concentration": 32.0
+        },
+        {
+          "timestamp": "2026-11-23T21:00:00+00:00",
+          "concentration": 34.0
+        },
+        {
+          "timestamp": "2026-11-23T22:00:00+00:00",
+          "concentration": 36.0
+        },
+        {
+          "timestamp": "2026-11-23T23:00:00+00:00",
+          "concentration": 38.0
+        },
+        {
+          "timestamp": "2026-11-24T00:00:00+00:00",
+          "concentration": 40.0
+        },
+        {
+          "timestamp": "2026-11-24T01:00:00+00:00",
+          "concentration": 42.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 44.0
+        },
+        {
+          "timestamp": "2026-11-24T03:00:00+00:00",
+          "concentration": 46.0
+        },
+        {
+          "timestamp": "2026-11-24T04:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T05:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T06:00:00+00:00",
+          "concentration": 52.0
+        },
+        {
+          "timestamp": "2026-11-24T07:00:00+00:00",
+          "concentration": 54.0
+        },
+        {
+          "timestamp": "2026-11-24T08:00:00+00:00",
+          "concentration": 56.0
+        },
+        {
+          "timestamp": "2026-11-24T09:00:00+00:00",
+          "concentration": 58.0
+        },
+        {
+          "timestamp": "2026-11-24T10:00:00+00:00",
+          "concentration": 60.0
+        },
+        {
+          "timestamp": "2026-11-24T11:00:00+00:00",
+          "concentration": 62.0
+        },
+        {
+          "timestamp": "2026-11-24T12:00:00+00:00",
+          "concentration": 64.0
+        },
+        {
+          "timestamp": "2026-11-24T13:00:00+00:00",
+          "concentration": 66.0
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 68.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T15:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 20.0,
+          "end_concentration": 22.0,
+          "interval_integral": 75600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T15:00:00+00:00",
+          "end_time": "2026-11-23T16:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 22.0,
+          "end_concentration": 24.0,
+          "interval_integral": 82800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T16:00:00+00:00",
+          "end_time": "2026-11-23T17:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 24.0,
+          "end_concentration": 26.0,
+          "interval_integral": 90000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T17:00:00+00:00",
+          "end_time": "2026-11-23T18:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 26.0,
+          "end_concentration": 28.0,
+          "interval_integral": 97200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T18:00:00+00:00",
+          "end_time": "2026-11-23T19:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 28.0,
+          "end_concentration": 30.0,
+          "interval_integral": 104400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T19:00:00+00:00",
+          "end_time": "2026-11-23T20:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 30.0,
+          "end_concentration": 32.0,
+          "interval_integral": 111600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T20:00:00+00:00",
+          "end_time": "2026-11-23T21:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 32.0,
+          "end_concentration": 34.0,
+          "interval_integral": 118800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T21:00:00+00:00",
+          "end_time": "2026-11-23T22:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 34.0,
+          "end_concentration": 36.0,
+          "interval_integral": 126000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T22:00:00+00:00",
+          "end_time": "2026-11-23T23:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 36.0,
+          "end_concentration": 38.0,
+          "interval_integral": 133200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T23:00:00+00:00",
+          "end_time": "2026-11-24T00:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 38.0,
+          "end_concentration": 40.0,
+          "interval_integral": 140400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T00:00:00+00:00",
+          "end_time": "2026-11-24T01:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 40.0,
+          "end_concentration": 42.0,
+          "interval_integral": 147600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T01:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 42.0,
+          "end_concentration": 44.0,
+          "interval_integral": 154800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T02:00:00+00:00",
+          "end_time": "2026-11-24T03:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 44.0,
+          "end_concentration": 46.0,
+          "interval_integral": 162000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T03:00:00+00:00",
+          "end_time": "2026-11-24T04:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 46.0,
+          "end_concentration": 48.0,
+          "interval_integral": 169200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T04:00:00+00:00",
+          "end_time": "2026-11-24T05:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 50.0,
+          "interval_integral": 176400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T05:00:00+00:00",
+          "end_time": "2026-11-24T06:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 52.0,
+          "interval_integral": 183600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T06:00:00+00:00",
+          "end_time": "2026-11-24T07:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 52.0,
+          "end_concentration": 54.0,
+          "interval_integral": 190800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T07:00:00+00:00",
+          "end_time": "2026-11-24T08:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 54.0,
+          "end_concentration": 56.0,
+          "interval_integral": 198000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:00:00+00:00",
+          "end_time": "2026-11-24T09:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 56.0,
+          "end_concentration": 58.0,
+          "interval_integral": 205200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T09:00:00+00:00",
+          "end_time": "2026-11-24T10:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 58.0,
+          "end_concentration": 60.0,
+          "interval_integral": 212400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T10:00:00+00:00",
+          "end_time": "2026-11-24T11:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 60.0,
+          "end_concentration": 62.0,
+          "interval_integral": 219600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T11:00:00+00:00",
+          "end_time": "2026-11-24T12:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 62.0,
+          "end_concentration": 64.0,
+          "interval_integral": 226800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T12:00:00+00:00",
+          "end_time": "2026-11-24T13:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 64.0,
+          "end_concentration": 66.0,
+          "interval_integral": 234000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T13:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 66.0,
+          "end_concentration": 68.0,
+          "interval_integral": 241200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 86400.0,
+      "coverage_percentage": 100.0,
+      "total_integrated_concentration": 3801600.0,
+      "time_weighted_mean": 44.0,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-03",
+      "name": "TEST-03: Linear Concentration Decrease (24h)",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 25,
+      "valid_points_count": 25,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 100.0
+        },
+        {
+          "timestamp": "2026-11-23T15:00:00+00:00",
+          "concentration": 97.0
+        },
+        {
+          "timestamp": "2026-11-23T16:00:00+00:00",
+          "concentration": 94.0
+        },
+        {
+          "timestamp": "2026-11-23T17:00:00+00:00",
+          "concentration": 91.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": 88.0
+        },
+        {
+          "timestamp": "2026-11-23T19:00:00+00:00",
+          "concentration": 85.0
+        },
+        {
+          "timestamp": "2026-11-23T20:00:00+00:00",
+          "concentration": 82.0
+        },
+        {
+          "timestamp": "2026-11-23T21:00:00+00:00",
+          "concentration": 79.0
+        },
+        {
+          "timestamp": "2026-11-23T22:00:00+00:00",
+          "concentration": 76.0
+        },
+        {
+          "timestamp": "2026-11-23T23:00:00+00:00",
+          "concentration": 73.0
+        },
+        {
+          "timestamp": "2026-11-24T00:00:00+00:00",
+          "concentration": 70.0
+        },
+        {
+          "timestamp": "2026-11-24T01:00:00+00:00",
+          "concentration": 67.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 64.0
+        },
+        {
+          "timestamp": "2026-11-24T03:00:00+00:00",
+          "concentration": 61.0
+        },
+        {
+          "timestamp": "2026-11-24T04:00:00+00:00",
+          "concentration": 58.0
+        },
+        {
+          "timestamp": "2026-11-24T05:00:00+00:00",
+          "concentration": 55.0
+        },
+        {
+          "timestamp": "2026-11-24T06:00:00+00:00",
+          "concentration": 52.0
+        },
+        {
+          "timestamp": "2026-11-24T07:00:00+00:00",
+          "concentration": 49.0
+        },
+        {
+          "timestamp": "2026-11-24T08:00:00+00:00",
+          "concentration": 46.0
+        },
+        {
+          "timestamp": "2026-11-24T09:00:00+00:00",
+          "concentration": 43.0
+        },
+        {
+          "timestamp": "2026-11-24T10:00:00+00:00",
+          "concentration": 40.0
+        },
+        {
+          "timestamp": "2026-11-24T11:00:00+00:00",
+          "concentration": 37.0
+        },
+        {
+          "timestamp": "2026-11-24T12:00:00+00:00",
+          "concentration": 34.0
+        },
+        {
+          "timestamp": "2026-11-24T13:00:00+00:00",
+          "concentration": 31.0
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 28.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T15:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 100.0,
+          "end_concentration": 97.0,
+          "interval_integral": 354600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T15:00:00+00:00",
+          "end_time": "2026-11-23T16:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 97.0,
+          "end_concentration": 94.0,
+          "interval_integral": 343800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T16:00:00+00:00",
+          "end_time": "2026-11-23T17:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 94.0,
+          "end_concentration": 91.0,
+          "interval_integral": 333000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T17:00:00+00:00",
+          "end_time": "2026-11-23T18:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 91.0,
+          "end_concentration": 88.0,
+          "interval_integral": 322200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T18:00:00+00:00",
+          "end_time": "2026-11-23T19:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 88.0,
+          "end_concentration": 85.0,
+          "interval_integral": 311400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T19:00:00+00:00",
+          "end_time": "2026-11-23T20:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 85.0,
+          "end_concentration": 82.0,
+          "interval_integral": 300600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T20:00:00+00:00",
+          "end_time": "2026-11-23T21:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 82.0,
+          "end_concentration": 79.0,
+          "interval_integral": 289800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T21:00:00+00:00",
+          "end_time": "2026-11-23T22:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 79.0,
+          "end_concentration": 76.0,
+          "interval_integral": 279000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T22:00:00+00:00",
+          "end_time": "2026-11-23T23:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 76.0,
+          "end_concentration": 73.0,
+          "interval_integral": 268200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T23:00:00+00:00",
+          "end_time": "2026-11-24T00:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 73.0,
+          "end_concentration": 70.0,
+          "interval_integral": 257400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T00:00:00+00:00",
+          "end_time": "2026-11-24T01:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 70.0,
+          "end_concentration": 67.0,
+          "interval_integral": 246600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T01:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 67.0,
+          "end_concentration": 64.0,
+          "interval_integral": 235800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T02:00:00+00:00",
+          "end_time": "2026-11-24T03:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 64.0,
+          "end_concentration": 61.0,
+          "interval_integral": 225000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T03:00:00+00:00",
+          "end_time": "2026-11-24T04:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 61.0,
+          "end_concentration": 58.0,
+          "interval_integral": 214200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T04:00:00+00:00",
+          "end_time": "2026-11-24T05:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 58.0,
+          "end_concentration": 55.0,
+          "interval_integral": 203400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T05:00:00+00:00",
+          "end_time": "2026-11-24T06:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 55.0,
+          "end_concentration": 52.0,
+          "interval_integral": 192600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T06:00:00+00:00",
+          "end_time": "2026-11-24T07:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 52.0,
+          "end_concentration": 49.0,
+          "interval_integral": 181800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T07:00:00+00:00",
+          "end_time": "2026-11-24T08:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 49.0,
+          "end_concentration": 46.0,
+          "interval_integral": 171000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:00:00+00:00",
+          "end_time": "2026-11-24T09:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 46.0,
+          "end_concentration": 43.0,
+          "interval_integral": 160200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T09:00:00+00:00",
+          "end_time": "2026-11-24T10:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 43.0,
+          "end_concentration": 40.0,
+          "interval_integral": 149400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T10:00:00+00:00",
+          "end_time": "2026-11-24T11:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 40.0,
+          "end_concentration": 37.0,
+          "interval_integral": 138600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T11:00:00+00:00",
+          "end_time": "2026-11-24T12:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 37.0,
+          "end_concentration": 34.0,
+          "interval_integral": 127800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T12:00:00+00:00",
+          "end_time": "2026-11-24T13:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 34.0,
+          "end_concentration": 31.0,
+          "interval_integral": 117000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T13:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 31.0,
+          "end_concentration": 28.0,
+          "interval_integral": 106200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 86400.0,
+      "coverage_percentage": 100.0,
+      "total_integrated_concentration": 5529600.0,
+      "time_weighted_mean": 64.0,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-04",
+      "name": "TEST-04: Irregular Hourly Intervals (24h)",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 10,
+      "valid_points_count": 10,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 30.0
+        },
+        {
+          "timestamp": "2026-11-23T15:00:00+00:00",
+          "concentration": 31.5
+        },
+        {
+          "timestamp": "2026-11-23T16:30:00+00:00",
+          "concentration": 33.75
+        },
+        {
+          "timestamp": "2026-11-23T19:00:00+00:00",
+          "concentration": 37.5
+        },
+        {
+          "timestamp": "2026-11-23T22:00:00+00:00",
+          "concentration": 42.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T05:00:00+00:00",
+          "concentration": 52.5
+        },
+        {
+          "timestamp": "2026-11-24T08:30:00+00:00",
+          "concentration": 57.75
+        },
+        {
+          "timestamp": "2026-11-24T11:00:00+00:00",
+          "concentration": 61.5
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 66.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T15:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 30.0,
+          "end_concentration": 31.5,
+          "interval_integral": 110700.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T15:00:00+00:00",
+          "end_time": "2026-11-23T16:30:00+00:00",
+          "duration_seconds": 5400.0,
+          "start_concentration": 31.5,
+          "end_concentration": 33.75,
+          "interval_integral": 176175.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T16:30:00+00:00",
+          "end_time": "2026-11-23T19:00:00+00:00",
+          "duration_seconds": 9000.0,
+          "start_concentration": 33.75,
+          "end_concentration": 37.5,
+          "interval_integral": 320625.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T19:00:00+00:00",
+          "end_time": "2026-11-23T22:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 37.5,
+          "end_concentration": 42.0,
+          "interval_integral": 429300.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T22:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "duration_seconds": 14400.0,
+          "start_concentration": 42.0,
+          "end_concentration": 48.0,
+          "interval_integral": 648000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T02:00:00+00:00",
+          "end_time": "2026-11-24T05:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 48.0,
+          "end_concentration": 52.5,
+          "interval_integral": 542700.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T05:00:00+00:00",
+          "end_time": "2026-11-24T08:30:00+00:00",
+          "duration_seconds": 12600.0,
+          "start_concentration": 52.5,
+          "end_concentration": 57.75,
+          "interval_integral": 694575.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:30:00+00:00",
+          "end_time": "2026-11-24T11:00:00+00:00",
+          "duration_seconds": 9000.0,
+          "start_concentration": 57.75,
+          "end_concentration": 61.5,
+          "interval_integral": 536625.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T11:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 61.5,
+          "end_concentration": 66.0,
+          "interval_integral": 688500.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 86400.0,
+      "coverage_percentage": 100.0,
+      "total_integrated_concentration": 4147200.0,
+      "time_weighted_mean": 48.0,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-05",
+      "name": "TEST-05: Missing Sample with Acceptable Gap (4h = G_max)",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 12,
+      "valid_points_count": 12,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 40.0
+        },
+        {
+          "timestamp": "2026-11-23T16:00:00+00:00",
+          "concentration": 43.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": 46.0
+        },
+        {
+          "timestamp": "2026-11-23T22:00:00+00:00",
+          "concentration": 52.0
+        },
+        {
+          "timestamp": "2026-11-24T00:00:00+00:00",
+          "concentration": 55.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 58.0
+        },
+        {
+          "timestamp": "2026-11-24T04:00:00+00:00",
+          "concentration": 61.0
+        },
+        {
+          "timestamp": "2026-11-24T06:00:00+00:00",
+          "concentration": 64.0
+        },
+        {
+          "timestamp": "2026-11-24T08:00:00+00:00",
+          "concentration": 67.0
+        },
+        {
+          "timestamp": "2026-11-24T10:00:00+00:00",
+          "concentration": 70.0
+        },
+        {
+          "timestamp": "2026-11-24T12:00:00+00:00",
+          "concentration": 73.0
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 76.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T16:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 40.0,
+          "end_concentration": 43.0,
+          "interval_integral": 298800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T16:00:00+00:00",
+          "end_time": "2026-11-23T18:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 43.0,
+          "end_concentration": 46.0,
+          "interval_integral": 320400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T18:00:00+00:00",
+          "end_time": "2026-11-23T22:00:00+00:00",
+          "duration_seconds": 14400.0,
+          "start_concentration": 46.0,
+          "end_concentration": 52.0,
+          "interval_integral": 705600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T22:00:00+00:00",
+          "end_time": "2026-11-24T00:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 52.0,
+          "end_concentration": 55.0,
+          "interval_integral": 385200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T00:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 55.0,
+          "end_concentration": 58.0,
+          "interval_integral": 406800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T02:00:00+00:00",
+          "end_time": "2026-11-24T04:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 58.0,
+          "end_concentration": 61.0,
+          "interval_integral": 428400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T04:00:00+00:00",
+          "end_time": "2026-11-24T06:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 61.0,
+          "end_concentration": 64.0,
+          "interval_integral": 450000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T06:00:00+00:00",
+          "end_time": "2026-11-24T08:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 64.0,
+          "end_concentration": 67.0,
+          "interval_integral": 471600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:00:00+00:00",
+          "end_time": "2026-11-24T10:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 67.0,
+          "end_concentration": 70.0,
+          "interval_integral": 493200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T10:00:00+00:00",
+          "end_time": "2026-11-24T12:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 70.0,
+          "end_concentration": 73.0,
+          "interval_integral": 514800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T12:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 73.0,
+          "end_concentration": 76.0,
+          "interval_integral": 536400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 86400.0,
+      "coverage_percentage": 100.0,
+      "total_integrated_concentration": 5011200.0,
+      "time_weighted_mean": 58.0,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-06",
+      "name": "TEST-06: Missing Sample with Excessive Gap (6h > G_max)",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 8,
+      "valid_points_count": 8,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 45.0
+        },
+        {
+          "timestamp": "2026-11-23T17:00:00+00:00",
+          "concentration": 54.0
+        },
+        {
+          "timestamp": "2026-11-23T20:00:00+00:00",
+          "concentration": 45.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 45.0
+        },
+        {
+          "timestamp": "2026-11-24T05:00:00+00:00",
+          "concentration": 54.0
+        },
+        {
+          "timestamp": "2026-11-24T08:00:00+00:00",
+          "concentration": 45.0
+        },
+        {
+          "timestamp": "2026-11-24T11:00:00+00:00",
+          "concentration": 54.0
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 45.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T17:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 45.0,
+          "end_concentration": 54.0,
+          "interval_integral": 534600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T17:00:00+00:00",
+          "end_time": "2026-11-23T20:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 54.0,
+          "end_concentration": 45.0,
+          "interval_integral": 534600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T02:00:00+00:00",
+          "end_time": "2026-11-24T05:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 45.0,
+          "end_concentration": 54.0,
+          "interval_integral": 534600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T05:00:00+00:00",
+          "end_time": "2026-11-24T08:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 54.0,
+          "end_concentration": 45.0,
+          "interval_integral": 534600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:00:00+00:00",
+          "end_time": "2026-11-24T11:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 45.0,
+          "end_concentration": 54.0,
+          "interval_integral": 534600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T11:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 54.0,
+          "end_concentration": 45.0,
+          "interval_integral": 534600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [
+        {
+          "start_time": "2026-11-23T20:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "gap_seconds": 21600.0,
+          "reason": "Gap 21600s exceeds G_max (14400s)"
+        }
+      ],
+      "supported_duration_seconds": 64800.0,
+      "coverage_percentage": 75.0,
+      "total_integrated_concentration": 3207600.0,
+      "time_weighted_mean": 49.5,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-07",
+      "name": "TEST-07: Gaps Exactly Equal to G_max (4h)",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 7,
+      "valid_points_count": 7,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 35.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": 43.0
+        },
+        {
+          "timestamp": "2026-11-23T22:00:00+00:00",
+          "concentration": 51.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 59.0
+        },
+        {
+          "timestamp": "2026-11-24T06:00:00+00:00",
+          "concentration": 67.0
+        },
+        {
+          "timestamp": "2026-11-24T10:00:00+00:00",
+          "concentration": 75.0
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 83.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T18:00:00+00:00",
+          "duration_seconds": 14400.0,
+          "start_concentration": 35.0,
+          "end_concentration": 43.0,
+          "interval_integral": 561600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T18:00:00+00:00",
+          "end_time": "2026-11-23T22:00:00+00:00",
+          "duration_seconds": 14400.0,
+          "start_concentration": 43.0,
+          "end_concentration": 51.0,
+          "interval_integral": 676800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T22:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "duration_seconds": 14400.0,
+          "start_concentration": 51.0,
+          "end_concentration": 59.0,
+          "interval_integral": 792000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T02:00:00+00:00",
+          "end_time": "2026-11-24T06:00:00+00:00",
+          "duration_seconds": 14400.0,
+          "start_concentration": 59.0,
+          "end_concentration": 67.0,
+          "interval_integral": 907200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T06:00:00+00:00",
+          "end_time": "2026-11-24T10:00:00+00:00",
+          "duration_seconds": 14400.0,
+          "start_concentration": 67.0,
+          "end_concentration": 75.0,
+          "interval_integral": 1022400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T10:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 14400.0,
+          "start_concentration": 75.0,
+          "end_concentration": 83.0,
+          "interval_integral": 1137600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 86400.0,
+      "coverage_percentage": 100.0,
+      "total_integrated_concentration": 5097600.0,
+      "time_weighted_mean": 59.0,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-08",
+      "name": "TEST-08: Gap Just Greater Than G_max (14401s)",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 4,
+      "valid_points_count": 4,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 30.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T22:00:01+00:00",
+          "concentration": 70.0
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 60.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T18:00:00+00:00",
+          "duration_seconds": 14400.0,
+          "start_concentration": 30.0,
+          "end_concentration": 50.0,
+          "interval_integral": 576000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [
+        {
+          "start_time": "2026-11-23T18:00:00+00:00",
+          "end_time": "2026-11-23T22:00:01+00:00",
+          "gap_seconds": 14401.0,
+          "reason": "Gap 14401s exceeds G_max (14400s)"
+        },
+        {
+          "start_time": "2026-11-23T22:00:01+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "gap_seconds": 57599.0,
+          "reason": "Gap 57599s exceeds G_max (14400s)"
+        }
+      ],
+      "supported_duration_seconds": 14400.0,
+      "coverage_percentage": 16.666667,
+      "total_integrated_concentration": 576000.0,
+      "time_weighted_mean": 40.0,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-09",
+      "name": "TEST-09: Missing First Boundary Sample",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 12,
+      "valid_points_count": 12,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T16:00:00+00:00",
+          "concentration": 42.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": 44.0
+        },
+        {
+          "timestamp": "2026-11-23T20:00:00+00:00",
+          "concentration": 46.0
+        },
+        {
+          "timestamp": "2026-11-23T22:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T00:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 52.0
+        },
+        {
+          "timestamp": "2026-11-24T04:00:00+00:00",
+          "concentration": 54.0
+        },
+        {
+          "timestamp": "2026-11-24T06:00:00+00:00",
+          "concentration": 56.0
+        },
+        {
+          "timestamp": "2026-11-24T08:00:00+00:00",
+          "concentration": 58.0
+        },
+        {
+          "timestamp": "2026-11-24T10:00:00+00:00",
+          "concentration": 60.0
+        },
+        {
+          "timestamp": "2026-11-24T12:00:00+00:00",
+          "concentration": 62.0
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 64.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T16:00:00+00:00",
+          "end_time": "2026-11-23T18:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 42.0,
+          "end_concentration": 44.0,
+          "interval_integral": 309600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T18:00:00+00:00",
+          "end_time": "2026-11-23T20:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 44.0,
+          "end_concentration": 46.0,
+          "interval_integral": 324000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T20:00:00+00:00",
+          "end_time": "2026-11-23T22:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 46.0,
+          "end_concentration": 48.0,
+          "interval_integral": 338400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T22:00:00+00:00",
+          "end_time": "2026-11-24T00:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 48.0,
+          "end_concentration": 50.0,
+          "interval_integral": 352800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T00:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 52.0,
+          "interval_integral": 367200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T02:00:00+00:00",
+          "end_time": "2026-11-24T04:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 52.0,
+          "end_concentration": 54.0,
+          "interval_integral": 381600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T04:00:00+00:00",
+          "end_time": "2026-11-24T06:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 54.0,
+          "end_concentration": 56.0,
+          "interval_integral": 396000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T06:00:00+00:00",
+          "end_time": "2026-11-24T08:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 56.0,
+          "end_concentration": 58.0,
+          "interval_integral": 410400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:00:00+00:00",
+          "end_time": "2026-11-24T10:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 58.0,
+          "end_concentration": 60.0,
+          "interval_integral": 424800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T10:00:00+00:00",
+          "end_time": "2026-11-24T12:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 60.0,
+          "end_concentration": 62.0,
+          "interval_integral": 439200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T12:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 62.0,
+          "end_concentration": 64.0,
+          "interval_integral": 453600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 79200.0,
+      "coverage_percentage": 91.666667,
+      "total_integrated_concentration": 4197600.0,
+      "time_weighted_mean": 53.0,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-10",
+      "name": "TEST-10: Missing Last Boundary Sample",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 12,
+      "valid_points_count": 12,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 60.0
+        },
+        {
+          "timestamp": "2026-11-23T16:00:00+00:00",
+          "concentration": 58.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": 56.0
+        },
+        {
+          "timestamp": "2026-11-23T20:00:00+00:00",
+          "concentration": 54.0
+        },
+        {
+          "timestamp": "2026-11-23T22:00:00+00:00",
+          "concentration": 52.0
+        },
+        {
+          "timestamp": "2026-11-24T00:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T04:00:00+00:00",
+          "concentration": 46.0
+        },
+        {
+          "timestamp": "2026-11-24T06:00:00+00:00",
+          "concentration": 44.0
+        },
+        {
+          "timestamp": "2026-11-24T08:00:00+00:00",
+          "concentration": 42.0
+        },
+        {
+          "timestamp": "2026-11-24T10:00:00+00:00",
+          "concentration": 40.0
+        },
+        {
+          "timestamp": "2026-11-24T12:00:00+00:00",
+          "concentration": 38.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T16:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 60.0,
+          "end_concentration": 58.0,
+          "interval_integral": 424800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T16:00:00+00:00",
+          "end_time": "2026-11-23T18:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 58.0,
+          "end_concentration": 56.0,
+          "interval_integral": 410400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T18:00:00+00:00",
+          "end_time": "2026-11-23T20:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 56.0,
+          "end_concentration": 54.0,
+          "interval_integral": 396000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T20:00:00+00:00",
+          "end_time": "2026-11-23T22:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 54.0,
+          "end_concentration": 52.0,
+          "interval_integral": 381600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T22:00:00+00:00",
+          "end_time": "2026-11-24T00:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 52.0,
+          "end_concentration": 50.0,
+          "interval_integral": 367200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T00:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 48.0,
+          "interval_integral": 352800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T02:00:00+00:00",
+          "end_time": "2026-11-24T04:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 48.0,
+          "end_concentration": 46.0,
+          "interval_integral": 338400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T04:00:00+00:00",
+          "end_time": "2026-11-24T06:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 46.0,
+          "end_concentration": 44.0,
+          "interval_integral": 324000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T06:00:00+00:00",
+          "end_time": "2026-11-24T08:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 44.0,
+          "end_concentration": 42.0,
+          "interval_integral": 309600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:00:00+00:00",
+          "end_time": "2026-11-24T10:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 42.0,
+          "end_concentration": 40.0,
+          "interval_integral": 295200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T10:00:00+00:00",
+          "end_time": "2026-11-24T12:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 40.0,
+          "end_concentration": 38.0,
+          "interval_integral": 280800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 79200.0,
+      "coverage_percentage": 91.666667,
+      "total_integrated_concentration": 3880800.0,
+      "time_weighted_mean": 49.0,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-11",
+      "name": "TEST-11: Both Boundaries Interpolated (Bracketing <= G_max)",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 13,
+      "valid_points_count": 13,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T13:00:00+00:00",
+          "concentration": 30.0
+        },
+        {
+          "timestamp": "2026-11-23T16:00:00+00:00",
+          "concentration": 60.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": 61.0
+        },
+        {
+          "timestamp": "2026-11-23T20:00:00+00:00",
+          "concentration": 62.0
+        },
+        {
+          "timestamp": "2026-11-23T22:00:00+00:00",
+          "concentration": 63.0
+        },
+        {
+          "timestamp": "2026-11-24T00:00:00+00:00",
+          "concentration": 64.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 65.0
+        },
+        {
+          "timestamp": "2026-11-24T04:00:00+00:00",
+          "concentration": 66.0
+        },
+        {
+          "timestamp": "2026-11-24T06:00:00+00:00",
+          "concentration": 67.0
+        },
+        {
+          "timestamp": "2026-11-24T08:00:00+00:00",
+          "concentration": 68.0
+        },
+        {
+          "timestamp": "2026-11-24T10:00:00+00:00",
+          "concentration": 69.0
+        },
+        {
+          "timestamp": "2026-11-24T12:00:00+00:00",
+          "concentration": 70.0
+        },
+        {
+          "timestamp": "2026-11-24T15:00:00+00:00",
+          "concentration": 100.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T16:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 40.0,
+          "end_concentration": 60.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": true,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T16:00:00+00:00",
+          "end_time": "2026-11-23T18:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 60.0,
+          "end_concentration": 61.0,
+          "interval_integral": 435600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T18:00:00+00:00",
+          "end_time": "2026-11-23T20:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 61.0,
+          "end_concentration": 62.0,
+          "interval_integral": 442800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T20:00:00+00:00",
+          "end_time": "2026-11-23T22:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 62.0,
+          "end_concentration": 63.0,
+          "interval_integral": 450000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T22:00:00+00:00",
+          "end_time": "2026-11-24T00:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 63.0,
+          "end_concentration": 64.0,
+          "interval_integral": 457200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T00:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 64.0,
+          "end_concentration": 65.0,
+          "interval_integral": 464400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T02:00:00+00:00",
+          "end_time": "2026-11-24T04:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 65.0,
+          "end_concentration": 66.0,
+          "interval_integral": 471600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T04:00:00+00:00",
+          "end_time": "2026-11-24T06:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 66.0,
+          "end_concentration": 67.0,
+          "interval_integral": 478800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T06:00:00+00:00",
+          "end_time": "2026-11-24T08:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 67.0,
+          "end_concentration": 68.0,
+          "interval_integral": 486000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:00:00+00:00",
+          "end_time": "2026-11-24T10:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 68.0,
+          "end_concentration": 69.0,
+          "interval_integral": 493200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T10:00:00+00:00",
+          "end_time": "2026-11-24T12:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 69.0,
+          "end_concentration": 70.0,
+          "interval_integral": 500400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T12:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 70.0,
+          "end_concentration": 90.0,
+          "interval_integral": 576000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": true
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 86400.0,
+      "coverage_percentage": 100.0,
+      "total_integrated_concentration": 5616000.0,
+      "time_weighted_mean": 65.0,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-12",
+      "name": "TEST-12: Samples Exactly at Both Boundaries",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 9,
+      "valid_points_count": 9,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T17:00:00+00:00",
+          "concentration": 56.0
+        },
+        {
+          "timestamp": "2026-11-23T20:00:00+00:00",
+          "concentration": 62.0
+        },
+        {
+          "timestamp": "2026-11-23T23:00:00+00:00",
+          "concentration": 68.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 74.0
+        },
+        {
+          "timestamp": "2026-11-24T05:00:00+00:00",
+          "concentration": 80.0
+        },
+        {
+          "timestamp": "2026-11-24T08:00:00+00:00",
+          "concentration": 86.0
+        },
+        {
+          "timestamp": "2026-11-24T11:00:00+00:00",
+          "concentration": 92.0
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 98.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T17:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 50.0,
+          "end_concentration": 56.0,
+          "interval_integral": 572400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T17:00:00+00:00",
+          "end_time": "2026-11-23T20:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 56.0,
+          "end_concentration": 62.0,
+          "interval_integral": 637200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T20:00:00+00:00",
+          "end_time": "2026-11-23T23:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 62.0,
+          "end_concentration": 68.0,
+          "interval_integral": 702000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T23:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 68.0,
+          "end_concentration": 74.0,
+          "interval_integral": 766800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T02:00:00+00:00",
+          "end_time": "2026-11-24T05:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 74.0,
+          "end_concentration": 80.0,
+          "interval_integral": 831600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T05:00:00+00:00",
+          "end_time": "2026-11-24T08:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 80.0,
+          "end_concentration": 86.0,
+          "interval_integral": 896400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:00:00+00:00",
+          "end_time": "2026-11-24T11:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 86.0,
+          "end_concentration": 92.0,
+          "interval_integral": 961200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T11:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 10800.0,
+          "start_concentration": 92.0,
+          "end_concentration": 98.0,
+          "interval_integral": 1026000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 86400.0,
+      "coverage_percentage": 100.0,
+      "total_integrated_concentration": 6393600.0,
+      "time_weighted_mean": 74.0,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-13",
+      "name": "TEST-13: Zero Coverage (Samples Outside Window)",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 2,
+      "valid_points_count": 2,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T02:00:00+00:00",
+          "concentration": 45.0
+        },
+        {
+          "timestamp": "2026-11-23T06:00:00+00:00",
+          "concentration": 55.0
+        }
+      ],
+      "accepted_intervals": [],
+      "rejected_intervals": [
+        {
+          "start_time": "2026-11-23T02:00:00+00:00",
+          "end_time": "2026-11-23T06:00:00+00:00",
+          "gap_seconds": 14400.0,
+          "reason": "Interval does not intersect rolling window"
+        }
+      ],
+      "supported_duration_seconds": 0,
+      "coverage_percentage": 0.0,
+      "total_integrated_concentration": 0,
+      "time_weighted_mean": null,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-14",
+      "name": "TEST-14: Partial Coverage (50% Duration)",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 13,
+      "valid_points_count": 13,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T15:00:00+00:00",
+          "concentration": 51.0
+        },
+        {
+          "timestamp": "2026-11-23T16:00:00+00:00",
+          "concentration": 52.0
+        },
+        {
+          "timestamp": "2026-11-23T17:00:00+00:00",
+          "concentration": 53.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": 54.0
+        },
+        {
+          "timestamp": "2026-11-23T19:00:00+00:00",
+          "concentration": 55.0
+        },
+        {
+          "timestamp": "2026-11-23T20:00:00+00:00",
+          "concentration": 56.0
+        },
+        {
+          "timestamp": "2026-11-23T21:00:00+00:00",
+          "concentration": 57.0
+        },
+        {
+          "timestamp": "2026-11-23T22:00:00+00:00",
+          "concentration": 58.0
+        },
+        {
+          "timestamp": "2026-11-23T23:00:00+00:00",
+          "concentration": 59.0
+        },
+        {
+          "timestamp": "2026-11-24T00:00:00+00:00",
+          "concentration": 60.0
+        },
+        {
+          "timestamp": "2026-11-24T01:00:00+00:00",
+          "concentration": 61.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 62.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T15:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 50.0,
+          "end_concentration": 51.0,
+          "interval_integral": 181800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T15:00:00+00:00",
+          "end_time": "2026-11-23T16:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 51.0,
+          "end_concentration": 52.0,
+          "interval_integral": 185400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T16:00:00+00:00",
+          "end_time": "2026-11-23T17:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 52.0,
+          "end_concentration": 53.0,
+          "interval_integral": 189000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T17:00:00+00:00",
+          "end_time": "2026-11-23T18:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 53.0,
+          "end_concentration": 54.0,
+          "interval_integral": 192600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T18:00:00+00:00",
+          "end_time": "2026-11-23T19:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 54.0,
+          "end_concentration": 55.0,
+          "interval_integral": 196200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T19:00:00+00:00",
+          "end_time": "2026-11-23T20:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 55.0,
+          "end_concentration": 56.0,
+          "interval_integral": 199800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T20:00:00+00:00",
+          "end_time": "2026-11-23T21:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 56.0,
+          "end_concentration": 57.0,
+          "interval_integral": 203400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T21:00:00+00:00",
+          "end_time": "2026-11-23T22:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 57.0,
+          "end_concentration": 58.0,
+          "interval_integral": 207000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T22:00:00+00:00",
+          "end_time": "2026-11-23T23:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 58.0,
+          "end_concentration": 59.0,
+          "interval_integral": 210600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T23:00:00+00:00",
+          "end_time": "2026-11-24T00:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 59.0,
+          "end_concentration": 60.0,
+          "interval_integral": 214200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T00:00:00+00:00",
+          "end_time": "2026-11-24T01:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 60.0,
+          "end_concentration": 61.0,
+          "interval_integral": 217800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T01:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 61.0,
+          "end_concentration": 62.0,
+          "interval_integral": 221400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 43200.0,
+      "coverage_percentage": 50.0,
+      "total_integrated_concentration": 2419200.0,
+      "time_weighted_mean": 56.0,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-15",
+      "name": "TEST-15: Complete Coverage (2-hourly)",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 13,
+      "valid_points_count": 13,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 45.0
+        },
+        {
+          "timestamp": "2026-11-23T16:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": 51.0
+        },
+        {
+          "timestamp": "2026-11-23T20:00:00+00:00",
+          "concentration": 54.0
+        },
+        {
+          "timestamp": "2026-11-23T22:00:00+00:00",
+          "concentration": 57.0
+        },
+        {
+          "timestamp": "2026-11-24T00:00:00+00:00",
+          "concentration": 60.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 63.0
+        },
+        {
+          "timestamp": "2026-11-24T04:00:00+00:00",
+          "concentration": 66.0
+        },
+        {
+          "timestamp": "2026-11-24T06:00:00+00:00",
+          "concentration": 69.0
+        },
+        {
+          "timestamp": "2026-11-24T08:00:00+00:00",
+          "concentration": 72.0
+        },
+        {
+          "timestamp": "2026-11-24T10:00:00+00:00",
+          "concentration": 75.0
+        },
+        {
+          "timestamp": "2026-11-24T12:00:00+00:00",
+          "concentration": 78.0
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 81.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T16:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 45.0,
+          "end_concentration": 48.0,
+          "interval_integral": 334800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T16:00:00+00:00",
+          "end_time": "2026-11-23T18:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 48.0,
+          "end_concentration": 51.0,
+          "interval_integral": 356400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T18:00:00+00:00",
+          "end_time": "2026-11-23T20:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 51.0,
+          "end_concentration": 54.0,
+          "interval_integral": 378000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T20:00:00+00:00",
+          "end_time": "2026-11-23T22:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 54.0,
+          "end_concentration": 57.0,
+          "interval_integral": 399600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T22:00:00+00:00",
+          "end_time": "2026-11-24T00:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 57.0,
+          "end_concentration": 60.0,
+          "interval_integral": 421200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T00:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 60.0,
+          "end_concentration": 63.0,
+          "interval_integral": 442800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T02:00:00+00:00",
+          "end_time": "2026-11-24T04:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 63.0,
+          "end_concentration": 66.0,
+          "interval_integral": 464400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T04:00:00+00:00",
+          "end_time": "2026-11-24T06:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 66.0,
+          "end_concentration": 69.0,
+          "interval_integral": 486000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T06:00:00+00:00",
+          "end_time": "2026-11-24T08:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 69.0,
+          "end_concentration": 72.0,
+          "interval_integral": 507600.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:00:00+00:00",
+          "end_time": "2026-11-24T10:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 72.0,
+          "end_concentration": 75.0,
+          "interval_integral": 529200.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T10:00:00+00:00",
+          "end_time": "2026-11-24T12:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 75.0,
+          "end_concentration": 78.0,
+          "interval_integral": 550800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T12:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 78.0,
+          "end_concentration": 81.0,
+          "interval_integral": 572400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 86400.0,
+      "coverage_percentage": 100.0,
+      "total_integrated_concentration": 5443200.0,
+      "time_weighted_mean": 63.0,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-16",
+      "name": "TEST-16: Duplicate Timestamps (Identical Values)",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 14,
+      "valid_points_count": 13,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T16:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T16:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T20:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T22:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T00:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T04:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T06:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T08:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T10:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T12:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 50.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T16:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T16:00:00+00:00",
+          "end_time": "2026-11-23T18:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T18:00:00+00:00",
+          "end_time": "2026-11-23T20:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T20:00:00+00:00",
+          "end_time": "2026-11-23T22:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T22:00:00+00:00",
+          "end_time": "2026-11-24T00:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T00:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T02:00:00+00:00",
+          "end_time": "2026-11-24T04:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T04:00:00+00:00",
+          "end_time": "2026-11-24T06:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T06:00:00+00:00",
+          "end_time": "2026-11-24T08:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:00:00+00:00",
+          "end_time": "2026-11-24T10:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T10:00:00+00:00",
+          "end_time": "2026-11-24T12:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T12:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 86400.0,
+      "coverage_percentage": 100.0,
+      "total_integrated_concentration": 4320000.0,
+      "time_weighted_mean": 50.0,
+      "input_anomalies": [
+        "Identical duplicate timestamp at 2026-11-23T16:00:00+00:00 with value 50.0. Deduplicated."
+      ]
+    },
+    {
+      "test_id": "TEST-17",
+      "name": "TEST-17: Duplicate Timestamps (Conflicting Values)",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 14,
+      "valid_points_count": 12,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T16:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": 40.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": 80.0
+        },
+        {
+          "timestamp": "2026-11-23T20:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T22:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T00:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T04:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T06:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T08:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T10:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T12:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 50.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T16:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T16:00:00+00:00",
+          "end_time": "2026-11-23T20:00:00+00:00",
+          "duration_seconds": 14400.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 720000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T20:00:00+00:00",
+          "end_time": "2026-11-23T22:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T22:00:00+00:00",
+          "end_time": "2026-11-24T00:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T00:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T02:00:00+00:00",
+          "end_time": "2026-11-24T04:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T04:00:00+00:00",
+          "end_time": "2026-11-24T06:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T06:00:00+00:00",
+          "end_time": "2026-11-24T08:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:00:00+00:00",
+          "end_time": "2026-11-24T10:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T10:00:00+00:00",
+          "end_time": "2026-11-24T12:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T12:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 86400.0,
+      "coverage_percentage": 100.0,
+      "total_integrated_concentration": 4320000.0,
+      "time_weighted_mean": 50.0,
+      "input_anomalies": [
+        "CONFLICTING duplicate timestamp at 2026-11-23T18:00:00+00:00 with values [40.0, 80.0]. Ambiguous; timestamp rejected."
+      ]
+    },
+    {
+      "test_id": "TEST-18",
+      "name": "TEST-18: Invalid Samples (Negative, Null, NaN, Inf)",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 13,
+      "valid_points_count": 9,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T16:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": -10.0
+        },
+        {
+          "timestamp": "2026-11-23T20:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-23T22:00:00+00:00",
+          "concentration": null
+        },
+        {
+          "timestamp": "2026-11-24T00:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": "nan"
+        },
+        {
+          "timestamp": "2026-11-24T04:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T06:00:00+00:00",
+          "concentration": "inf"
+        },
+        {
+          "timestamp": "2026-11-24T08:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T10:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T12:00:00+00:00",
+          "concentration": 50.0
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 50.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T16:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T16:00:00+00:00",
+          "end_time": "2026-11-23T20:00:00+00:00",
+          "duration_seconds": 14400.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 720000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T20:00:00+00:00",
+          "end_time": "2026-11-24T00:00:00+00:00",
+          "duration_seconds": 14400.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 720000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T00:00:00+00:00",
+          "end_time": "2026-11-24T04:00:00+00:00",
+          "duration_seconds": 14400.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 720000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T04:00:00+00:00",
+          "end_time": "2026-11-24T08:00:00+00:00",
+          "duration_seconds": 14400.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 720000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:00:00+00:00",
+          "end_time": "2026-11-24T10:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T10:00:00+00:00",
+          "end_time": "2026-11-24T12:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T12:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 7200.0,
+          "start_concentration": 50.0,
+          "end_concentration": 50.0,
+          "interval_integral": 360000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 86400.0,
+      "coverage_percentage": 100.0,
+      "total_integrated_concentration": 4320000.0,
+      "time_weighted_mean": 50.0,
+      "input_anomalies": [
+        "Negative concentration -10.0 at 2026-11-23T18:00:00+00:00 omitted.",
+        "Null/missing sample at 2026-11-23T22:00:00+00:00 omitted.",
+        "NaN sample at 2026-11-24T02:00:00+00:00 omitted.",
+        "Infinite sample at 2026-11-24T06:00:00+00:00 omitted."
+      ]
+    },
+    {
+      "test_id": "TEST-19",
+      "name": "TEST-19: Exact 24-Hour Duration Window",
+      "window": {
+        "start": "2026-11-23T14:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 86400.0
+      },
+      "total_inputs_count": 25,
+      "valid_points_count": 25,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-23T14:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-23T15:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-23T16:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-23T17:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-23T18:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-23T19:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-23T20:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-23T21:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-23T22:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-23T23:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T00:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T01:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T02:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T03:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T04:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T05:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T06:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T07:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T08:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T09:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T10:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T11:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T12:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T13:00:00+00:00",
+          "concentration": 48.0
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 48.0
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-23T14:00:00+00:00",
+          "end_time": "2026-11-23T15:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T15:00:00+00:00",
+          "end_time": "2026-11-23T16:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T16:00:00+00:00",
+          "end_time": "2026-11-23T17:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T17:00:00+00:00",
+          "end_time": "2026-11-23T18:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T18:00:00+00:00",
+          "end_time": "2026-11-23T19:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T19:00:00+00:00",
+          "end_time": "2026-11-23T20:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T20:00:00+00:00",
+          "end_time": "2026-11-23T21:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T21:00:00+00:00",
+          "end_time": "2026-11-23T22:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T22:00:00+00:00",
+          "end_time": "2026-11-23T23:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-23T23:00:00+00:00",
+          "end_time": "2026-11-24T00:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T00:00:00+00:00",
+          "end_time": "2026-11-24T01:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T01:00:00+00:00",
+          "end_time": "2026-11-24T02:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T02:00:00+00:00",
+          "end_time": "2026-11-24T03:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T03:00:00+00:00",
+          "end_time": "2026-11-24T04:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T04:00:00+00:00",
+          "end_time": "2026-11-24T05:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T05:00:00+00:00",
+          "end_time": "2026-11-24T06:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T06:00:00+00:00",
+          "end_time": "2026-11-24T07:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T07:00:00+00:00",
+          "end_time": "2026-11-24T08:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:00:00+00:00",
+          "end_time": "2026-11-24T09:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T09:00:00+00:00",
+          "end_time": "2026-11-24T10:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T10:00:00+00:00",
+          "end_time": "2026-11-24T11:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T11:00:00+00:00",
+          "end_time": "2026-11-24T12:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T12:00:00+00:00",
+          "end_time": "2026-11-24T13:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T13:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 48.0,
+          "end_concentration": 48.0,
+          "interval_integral": 172800.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 86400.0,
+      "coverage_percentage": 100.0,
+      "total_integrated_concentration": 4147200.0,
+      "time_weighted_mean": 48.0,
+      "input_anomalies": []
+    },
+    {
+      "test_id": "TEST-20",
+      "name": "TEST-20: Exact 8-Hour Duration Window (CO)",
+      "window": {
+        "start": "2026-11-24T06:00:00+00:00",
+        "end": "2026-11-24T14:00:00+00:00",
+        "expected_duration_seconds": 28800.0
+      },
+      "total_inputs_count": 9,
+      "valid_points_count": 9,
+      "input_samples": [
+        {
+          "timestamp": "2026-11-24T06:00:00+00:00",
+          "concentration": 1.0
+        },
+        {
+          "timestamp": "2026-11-24T07:00:00+00:00",
+          "concentration": 1.2
+        },
+        {
+          "timestamp": "2026-11-24T08:00:00+00:00",
+          "concentration": 1.4
+        },
+        {
+          "timestamp": "2026-11-24T09:00:00+00:00",
+          "concentration": 1.6
+        },
+        {
+          "timestamp": "2026-11-24T10:00:00+00:00",
+          "concentration": 1.8
+        },
+        {
+          "timestamp": "2026-11-24T11:00:00+00:00",
+          "concentration": 2.0
+        },
+        {
+          "timestamp": "2026-11-24T12:00:00+00:00",
+          "concentration": 2.2
+        },
+        {
+          "timestamp": "2026-11-24T13:00:00+00:00",
+          "concentration": 2.4000000000000004
+        },
+        {
+          "timestamp": "2026-11-24T14:00:00+00:00",
+          "concentration": 2.6
+        }
+      ],
+      "accepted_intervals": [
+        {
+          "start_time": "2026-11-24T06:00:00+00:00",
+          "end_time": "2026-11-24T07:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 1.0,
+          "end_concentration": 1.2,
+          "interval_integral": 3960.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T07:00:00+00:00",
+          "end_time": "2026-11-24T08:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 1.2,
+          "end_concentration": 1.4,
+          "interval_integral": 4680.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T08:00:00+00:00",
+          "end_time": "2026-11-24T09:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 1.4,
+          "end_concentration": 1.6,
+          "interval_integral": 5400.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T09:00:00+00:00",
+          "end_time": "2026-11-24T10:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 1.6,
+          "end_concentration": 1.8,
+          "interval_integral": 6120.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T10:00:00+00:00",
+          "end_time": "2026-11-24T11:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 1.8,
+          "end_concentration": 2.0,
+          "interval_integral": 6840.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T11:00:00+00:00",
+          "end_time": "2026-11-24T12:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 2.0,
+          "end_concentration": 2.2,
+          "interval_integral": 7560.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T12:00:00+00:00",
+          "end_time": "2026-11-24T13:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 2.2,
+          "end_concentration": 2.4,
+          "interval_integral": 8280.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        },
+        {
+          "start_time": "2026-11-24T13:00:00+00:00",
+          "end_time": "2026-11-24T14:00:00+00:00",
+          "duration_seconds": 3600.0,
+          "start_concentration": 2.4,
+          "end_concentration": 2.6,
+          "interval_integral": 9000.0,
+          "interpolated_start_boundary": false,
+          "interpolated_end_boundary": false
+        }
+      ],
+      "rejected_intervals": [],
+      "supported_duration_seconds": 28800.0,
+      "coverage_percentage": 100.0,
+      "total_integrated_concentration": 51840.0,
+      "time_weighted_mean": 1.8,
+      "input_anomalies": []
+    }
+  ]
+}

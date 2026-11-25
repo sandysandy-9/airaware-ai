@@ -10,7 +10,9 @@ Enforces the official CPCB rule:
 - Dominant pollutant = pollutant with the highest sub-index.
 """
 
-from typing import Dict, List, Optional, Tuple
+from decimal import Decimal, ROUND_HALF_UP
+import math
+from typing import Dict, List, Optional, Tuple, Union
 from pydantic import BaseModel, Field
 
 from app.engine.cpcb_breakpoints import (
@@ -21,10 +23,31 @@ from app.engine.cpcb_breakpoints import (
 )
 
 
+def round_half_up_non_negative(value: Union[float, int, Decimal]) -> int:
+    """Convert a finite non-negative numeric value to int using Decimal ROUND_HALF_UP, clamped [0, 500]."""
+    dec = value if isinstance(value, Decimal) else Decimal(str(value))
+    if dec < Decimal("0"):
+        raise ValueError(f"Expected non-negative value for AQI rounding, got {value!r}")
+    rounded = int(dec.quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+    return max(0, min(500, rounded))
+
+
+def resolve_aqi_category(sub_index: int) -> Tuple[str, str]:
+    """Resolve the official CPCB AQI category name and hex color for an integer AQI value."""
+    clamped = max(0, min(500, sub_index))
+    for cat_name, cat_data in AQI_CATEGORIES.items():
+        low, high = cat_data["range"]
+        if low <= clamped <= high:
+            return cat_name, cat_data["color"]
+    # Defensive fallback should never trigger given contiguous 0..500 CPCB ranges
+    return "SEVERE", AQI_CATEGORIES["SEVERE"]["color"]
+
+
 class SubIndexResult(BaseModel):
     pollutant: str
     concentration: float
     unit: str
+    raw_sub_index: Optional[float] = None
     sub_index: Optional[int] = None
     category: Optional[str] = None
     color: Optional[str] = None
@@ -71,75 +94,107 @@ def calculate_sub_index(pollutant: str, concentration: float) -> SubIndexResult:
             error="Measurement is null or missing",
         )
 
-    if concentration < 0:
+    if isinstance(concentration, bool) or not isinstance(concentration, (int, float)):
         return SubIndexResult(
             pollutant=pol_key,
-            concentration=concentration,
+            concentration=0.0,
             unit=unit,
             valid=False,
-            error=f"Invalid negative concentration ({concentration} {unit}). Sensor fault or calibration error.",
+            error=f"Invalid non-numeric concentration ({concentration!r} {unit}).",
+        )
+
+    conc = float(concentration)
+    if not math.isfinite(conc):
+        return SubIndexResult(
+            pollutant=pol_key,
+            concentration=0.0,
+            unit=unit,
+            valid=False,
+            error=f"Invalid non-finite concentration ({concentration} {unit}).",
+        )
+
+    if conc < 0:
+        return SubIndexResult(
+            pollutant=pol_key,
+            concentration=conc,
+            unit=unit,
+            valid=False,
+            error=f"Invalid negative concentration ({conc} {unit}). Sensor fault or calibration error.",
         )
 
     breakpoints = CPCB_BREAKPOINTS.get(pol_key)
     if not breakpoints:
         return SubIndexResult(
             pollutant=pol_key,
-            concentration=concentration,
+            concentration=conc,
             unit=unit,
             valid=False,
             error=f"No official CPCB breakpoints defined for pollutant '{pollutant}'.",
         )
 
-    # Find the breakpoint interval
-    matched_bp: Optional[BreakpointRange] = None
-    for bp in breakpoints:
-        if bp.c_low <= concentration <= bp.c_high:
-            matched_bp = bp
-            break
-
-    # If concentration exceeds highest breakpoint (Severe threshold)
-    if not matched_bp and concentration > breakpoints[-1].c_high:
-        matched_bp = breakpoints[-1]
-        sub_index = 500  # CPCB NAQI max index scale is 500
-        category = "SEVERE"
-        color = AQI_CATEGORIES["SEVERE"]["color"]
+    # Exceeding highest defined Severe upper concentration bound caps at AQI 500 without extrapolating
+    if conc > breakpoints[-1].c_high:
+        category, color = resolve_aqi_category(500)
         return SubIndexResult(
             pollutant=pol_key,
-            concentration=round(concentration, 2),
+            concentration=round(conc, 2),
             unit=unit,
-            sub_index=sub_index,
+            raw_sub_index=500.0,
+            sub_index=500,
             category=category,
             color=color,
             valid=True,
             error="Concentration exceeds upper scale of CPCB Severe bracket (>500 cap).",
         )
 
-    if not matched_bp:
-        # Edge case: slightly below 0 (handled above) or not matching
-        matched_bp = breakpoints[0]
-
-    # Linear interpolation formula:
-    # Ip = [(I_hi - I_lo) / (B_hi - B_lo)] * (Cp - B_lo) + I_lo
-    c_diff = matched_bp.c_high - matched_bp.c_low
-    if c_diff == 0:
-        sub_index = matched_bp.i_low
+    # Continuous piecewise-linear bracket lookup across CPCB thresholds.
+    # For the first range [0, c_high_0], B_lo = 0 and I_lo = 0.
+    # For subsequent ranges k >= 1 (c_high_{k-1} < Cp <= c_high_k), CPCB continuity sets
+    # B_lo = c_high_{k-1} and subtracts 1 from table I_lo when I_lo > 50 (e.g., 51->50, 101->100),
+    # eliminating the integer gaps in the static CPCB breakpoint table without altering table values.
+    if conc <= breakpoints[0].c_high:
+        b_low = breakpoints[0].c_low
+        b_high = breakpoints[0].c_high
+        i_low = breakpoints[0].i_low
+        i_high = breakpoints[0].i_high
     else:
-        ip = (
-            (matched_bp.i_high - matched_bp.i_low) / c_diff
-        ) * (concentration - matched_bp.c_low) + matched_bp.i_low
-        sub_index = int(round(ip))
+        b_low = breakpoints[0].c_high
+        b_high = breakpoints[0].c_high
+        i_low = breakpoints[0].i_high
+        i_high = breakpoints[0].i_high
+        for idx in range(1, len(breakpoints)):
+            prev_bp = breakpoints[idx - 1]
+            curr_bp = breakpoints[idx]
+            if prev_bp.c_high < conc <= curr_bp.c_high:
+                b_low = prev_bp.c_high
+                b_high = curr_bp.c_high
+                i_low = curr_bp.i_low - 1 if curr_bp.i_low > 50 else curr_bp.i_low
+                i_high = curr_bp.i_high
+                break
 
-    # Clamp sub-index between 0 and 500
-    sub_index = max(0, min(500, sub_index))
+    # Linear interpolation formula in Decimal arithmetic to avoid IEEE-754 half-tie drift:
+    # Ip = [(I_hi - I_lo) / (B_hi - B_lo)] * (Cp - B_lo) + I_lo
+    dec_conc = Decimal(str(conc))
+    dec_b_low = Decimal(str(b_low))
+    dec_b_high = Decimal(str(b_high))
+    dec_c_diff = dec_b_high - dec_b_low
+    if dec_c_diff == Decimal("0"):
+        ip_dec = Decimal(i_low)
+    else:
+        ip_dec = (
+            (Decimal(i_high - i_low) / dec_c_diff) * (dec_conc - dec_b_low)
+        ) + Decimal(i_low)
 
-    # Resolve category
-    category = matched_bp.category
-    color = AQI_CATEGORIES[category]["color"]
+    ip_dec = max(Decimal("0"), min(Decimal("500"), ip_dec))
+    raw_sub_index = float(ip_dec)
+    sub_index = round_half_up_non_negative(ip_dec)
+    category, color = resolve_aqi_category(sub_index)
 
     return SubIndexResult(
         pollutant=pol_key,
-        concentration=round(concentration, 2),
+        concentration=round(conc, 2),
         unit=unit,
+        raw_sub_index=raw_sub_index,
         sub_index=sub_index,
         category=category,
         color=color,
@@ -166,7 +221,7 @@ def calculate_cpcb_aqi(concentrations: Dict[str, Optional[float]]) -> CPCBAQIRes
     """
     standard_keys = ["pm25", "pm10", "no2", "so2", "co", "o3", "nh3", "pb"]
     sub_indices: Dict[str, SubIndexResult] = {}
-    valid_sub_indices: Dict[str, int] = {}
+    valid_raw_sub_indices: Dict[str, float] = {}
     missing_pollutants: List[str] = []
 
     for key in standard_keys:
@@ -185,10 +240,12 @@ def calculate_cpcb_aqi(concentrations: Dict[str, Optional[float]]) -> CPCBAQIRes
         res = calculate_sub_index(key, val)
         sub_indices[key] = res
         if res.valid and res.sub_index is not None:
-            valid_sub_indices[key] = res.sub_index
+            valid_raw_sub_indices[key] = (
+                res.raw_sub_index if res.raw_sub_index is not None else float(res.sub_index)
+            )
 
-    monitored_count = len(valid_sub_indices)
-    has_pm = ("pm25" in valid_sub_indices) or ("pm10" in valid_sub_indices)
+    monitored_count = len(valid_raw_sub_indices)
+    has_pm = ("pm25" in valid_raw_sub_indices) or ("pm10" in valid_raw_sub_indices)
 
     # Check official CPCB sufficiency condition
     if monitored_count < 3:
@@ -200,7 +257,7 @@ def calculate_cpcb_aqi(concentrations: Dict[str, Optional[float]]) -> CPCBAQIRes
             status="INSUFFICIENT_DATA",
             status_message=(
                 f"CPCB NAQI requires at least 3 monitored pollutants, but only {monitored_count} "
-                f"valid pollutant(s) were measured ({', '.join(valid_sub_indices.keys()) or 'none'})."
+                f"valid pollutant(s) were measured ({', '.join(valid_raw_sub_indices.keys()) or 'none'})."
             ),
             monitored_pollutants_count=monitored_count,
             has_particulate_matter=has_pm,
@@ -217,7 +274,7 @@ def calculate_cpcb_aqi(concentrations: Dict[str, Optional[float]]) -> CPCBAQIRes
             status="INSUFFICIENT_DATA",
             status_message=(
                 f"CPCB NAQI mandates that at least one particulate matter indicator (PM2.5 or PM10) "
-                f"must be monitored. Only gaseous pollutants were measured ({', '.join(valid_sub_indices.keys())})."
+                f"must be monitored. Only gaseous pollutants were measured ({', '.join(valid_raw_sub_indices.keys())})."
             ),
             monitored_pollutants_count=monitored_count,
             has_particulate_matter=False,
@@ -225,19 +282,12 @@ def calculate_cpcb_aqi(concentrations: Dict[str, Optional[float]]) -> CPCBAQIRes
             missing_pollutants=missing_pollutants,
         )
 
-    # Overall AQI is the maximum of the sub-indices
-    dominant_pol = max(valid_sub_indices, key=lambda k: valid_sub_indices[k])
-    overall_aqi = valid_sub_indices[dominant_pol]
+    # Determine composite max and dominant pollutant on full-precision sub-indices before final ROUND_HALF_UP
+    dominant_pol = max(valid_raw_sub_indices, key=lambda k: valid_raw_sub_indices[k])
+    overall_aqi = round_half_up_non_negative(valid_raw_sub_indices[dominant_pol])
 
-    # Determine category
-    category = "GOOD"
-    for cat_name, cat_data in AQI_CATEGORIES.items():
-        low, high = cat_data["range"]
-        if low <= overall_aqi <= high:
-            category = cat_name
-            break
-
-    color = AQI_CATEGORIES[category]["color"]
+    # Determine category and color strictly from final reported integer AQI
+    category, color = resolve_aqi_category(overall_aqi)
 
     return CPCBAQIResult(
         aqi=overall_aqi,

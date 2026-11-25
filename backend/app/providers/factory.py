@@ -1,8 +1,48 @@
 """Provider factory and standard Indian cities registry."""
 
+import re
 from typing import Dict, List, Optional
+import unicodedata
 from app.providers.base import BaseAirQualityProvider
 from app.providers.open_meteo import OpenMeteoProvider
+
+MAX_CITY_NAME_LENGTH = 64
+_SAFE_CITY_PATTERN = re.compile(r"^[A-Za-z][A-Za-z '\-]{0,63}$")
+_DISALLOWED_CITY_PHRASES = (
+    "ignore",
+    "instruction",
+    "override",
+    "pretend",
+    "system prompt",
+    "reveal",
+    "api key",
+    "prescribe",
+    "aqi",
+    "cpcb station",
+)
+
+
+def validate_city_input(city_name: str) -> str:
+    """Validate and sanitize client-supplied city strings against instruction/control injection."""
+    if not isinstance(city_name, str):
+        raise ValueError("City name must be a string.")
+    for ch in city_name:
+        if ord(ch) < 32 or unicodedata.category(ch).startswith("C"):
+            raise ValueError("City name contains disallowed control or formatting characters.")
+    cleaned = city_name.strip()
+    if not cleaned:
+        raise ValueError("City name must not be empty.")
+    if len(cleaned) > MAX_CITY_NAME_LENGTH:
+        raise ValueError(f"City name exceeds maximum length ({MAX_CITY_NAME_LENGTH} characters).")
+    if not _SAFE_CITY_PATTERN.match(cleaned):
+        raise ValueError(
+            "City name contains unsupported characters. Use letters, spaces, hyphens, or apostrophes only."
+        )
+    lowered = cleaned.lower()
+    for phrase in _DISALLOWED_CITY_PHRASES:
+        if re.search(rf"\b{re.escape(phrase)}\b", lowered):
+            raise ValueError("City name contains disallowed instruction-like phrasing.")
+    return cleaned
 
 
 MAJOR_INDIAN_CITIES: Dict[str, Dict] = {
@@ -34,33 +74,42 @@ def resolve_location(
     latitude: Optional[float] = None,
     longitude: Optional[float] = None,
 ) -> Dict:
-    """Resolve city name or geographic coordinates into standard location dict."""
-    if city_name:
-        key = city_name.lower().strip()
+    """Resolve city name or exact geographic coordinates without trusting raw client display strings."""
+    if (latitude is None) != (longitude is None) and not city_name:
+        raise ValueError("Both 'latitude' and 'longitude' must be provided when querying by coordinates.")
+
+    validated_city = validate_city_input(city_name) if city_name is not None else None
+
+    if latitude is not None and longitude is not None:
+        # Preserve exact requested coordinates and emit ONLY a neutral server-generated display label.
+        display_name = f"Custom Coordinates ({latitude:.4f}, {longitude:.4f})"
+        city_label = "Custom Coordinates"
+        state_label = "India"
+        for c in MAJOR_INDIAN_CITIES.values():
+            dist_sq = (c["lat"] - latitude) ** 2 + (c["lon"] - longitude) ** 2
+            if dist_sq < 0.05:  # within ~25 km reference label only
+                city_label = c["city"]
+                state_label = c["state"]
+                display_name = f"Near {c['name']} ({latitude:.4f}, {longitude:.4f})"
+                break
+        return {
+            "name": display_name,
+            "city": city_label,
+            "state": state_label,
+            "lat": float(latitude),
+            "lon": float(longitude),
+        }
+
+    if validated_city:
+        key = validated_city.lower()
         if key in MAJOR_INDIAN_CITIES:
             return MAJOR_INDIAN_CITIES[key]
         for c_key, c_info in MAJOR_INDIAN_CITIES.items():
             if key in c_info["name"].lower() or key in c_key:
                 return c_info
+        raise ValueError(
+            f"Unknown city '{validated_city}'. Choose a supported city from /api/v1/air-quality/cities or supply latitude and longitude."
+        )
 
-    if latitude is not None and longitude is not None:
-        # Check closest city if within 25km
-        closest = None
-        min_dist_sq = 1e9
-        for c in MAJOR_INDIAN_CITIES.values():
-            dist_sq = (c["lat"] - latitude) ** 2 + (c["lon"] - longitude) ** 2
-            if dist_sq < min_dist_sq:
-                min_dist_sq = dist_sq
-                closest = c
-        if closest and min_dist_sq < 0.2:  # roughly 20-30 km
-            return closest
-        return {
-            "name": f"Location ({latitude:.3f}, {longitude:.3f})",
-            "city": "Custom Location",
-            "state": "India",
-            "lat": latitude,
-            "lon": longitude,
-        }
-
-    # Default to Delhi if unspecified
+    # Default to Delhi reference coordinates if unspecified
     return MAJOR_INDIAN_CITIES["delhi"]

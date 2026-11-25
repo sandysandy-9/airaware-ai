@@ -11,8 +11,11 @@ Computes actionable, deterministic precautions based on:
 """
 
 from enum import Enum
-from typing import List, Optional
+from typing import TYPE_CHECKING, Dict, List, Literal, Optional
 from pydantic import BaseModel, Field
+
+if TYPE_CHECKING:
+    from app.schemas.air_quality import AirQualityPipelineResponse
 
 
 class ActivityType(str, Enum):
@@ -46,6 +49,18 @@ class AdvisoryLevel(str, Enum):
     HIGH = "HIGH_RISK"
     VERY_HIGH = "VERY_HIGH_RISK"
     EMERGENCY = "EMERGENCY_AVOID"
+    UNAVAILABLE = "UNAVAILABLE"
+
+
+class TriggeredRule(BaseModel):
+    """Explainable provenance record for a deterministic recommendation rule evaluation."""
+
+    rule_id: str
+    scope: Literal["PRODUCT_ACTIVITY_RULE", "CPCB_CATEGORY_MAPPING", "POLLUTANT_CAVEAT", "DATA_PROVENANCE"]
+    status: Literal["APPLIED", "ISSUED_WITH_REDUCED_SPECIFICITY", "BLOCKED"]
+    required_pollutants: List[str] = Field(default_factory=list)
+    optional_pollutants: List[str] = Field(default_factory=list)
+    reason: str
 
 
 class RecommendationResult(BaseModel):
@@ -92,7 +107,26 @@ def generate_recommendations(
     except ValueError:
         dur = ExposureDuration.THIRTY_TO_SIXTY_MIN
 
-    cat = (aqi_category or "SATISFACTORY").upper().strip()
+    cat = (aqi_category or "").upper().strip()
+    valid_categories = {"GOOD", "SATISFACTORY", "MODERATE", "POOR", "VERY_POOR", "SEVERE"}
+    if cat not in valid_categories:
+        return RecommendationResult(
+            aqi=None,
+            aqi_category="UNAVAILABLE",
+            dominant_pollutant=None,
+            activity=act,
+            vulnerability_group=vuln,
+            duration=dur,
+            advisory_level=AdvisoryLevel.UNAVAILABLE,
+            headline="Insufficient or Invalid Air Quality Evidence: Activity advisory unavailable.",
+            actionable_precautions=[
+                "Environmental air quality evidence is unavailable or invalid; never assume conditions are safe.",
+                "Consult local official CPCB CAAQMS bulletins before planning strenuous outdoor exertion.",
+            ],
+            protective_gear="Respiratory gear guidance unavailable without a verified air quality category.",
+            indoor_guidance="Maintain standard indoor precautions until verified air quality readings are available.",
+        )
+
     is_sensitive = vuln in [
         VulnerabilityGroup.CHILDREN,
         VulnerabilityGroup.ELDERLY,
@@ -187,7 +221,7 @@ def generate_recommendations(
         gear = "Certified N95 / FFP2 / FFP3 mask with airtight facial seal required for any step outdoors."
         indoor_guide = "Seal window cracks. Run HEPA filtration units continuously. Avoid indoor burning, frying, or incense."
 
-    else:  # SEVERE
+    elif cat == "SEVERE":
         level = AdvisoryLevel.EMERGENCY
         headline = "Severe Air Quality: Public Health Emergency. Absolute indoor containment advised."
         precautions.append("Emergency environmental threshold: Air toxicity affects healthy adults and severely jeopardizes sensitive groups.")
@@ -205,6 +239,10 @@ def generate_recommendations(
         precautions.append("Particulate Alert: Winter smog and calm morning winds trap fine particulates near ground level. Avoid dawn/dusk outdoor jogs.")
     elif dominant_pollutant == "co":
         precautions.append("Carbon Monoxide Alert: Avoid lingering near idling engines, subterranean parking lots, or poorly ventilated traffic junctions.")
+    elif dominant_pollutant == "no2":
+        precautions.append("Nitrogen Dioxide Alert: Elevated NO2 typically concentrates near heavy vehicular corridors; avoid exercising along busy roadways.")
+    elif dominant_pollutant == "so2":
+        precautions.append("Sulphur Dioxide Alert: Sensitive airways react quickly to SO2 plumes; minimize outdoor exposure downwind of combustion sources.")
 
     return RecommendationResult(
         aqi=aqi,
@@ -218,4 +256,184 @@ def generate_recommendations(
         actionable_precautions=precautions,
         protective_gear=gear,
         indoor_guidance=indoor_guide,
+    )
+
+
+class AssessmentRecommendationEvaluation(BaseModel):
+    """Server-authoritative Stage 3.2 deterministic recommendation outcome with Tier C traceability."""
+
+    status: Literal["AVAILABLE", "INSUFFICIENT_DATA"]
+    index_type: Literal["INDICATIVE_MODEL_INDEX"] = "INDICATIVE_MODEL_INDEX"
+    is_official_cpcb_station_aqi: Literal[False] = False
+    guidance_classification: str = (
+        "PRODUCT_RULE_ENGINE_GUIDANCE (distinct from official CPCB NAQI numerical breakpoints)"
+    )
+    recommendation: Optional[RecommendationResult] = None
+    triggered_rules: List[TriggeredRule] = Field(default_factory=list)
+    pollutant_context_status: Dict[str, str] = Field(default_factory=dict)
+    uncertainty_notes: List[str] = Field(default_factory=list)
+    safe_general_guidance: str = (
+        "When modelled coverage or cycle currency is incomplete, consult local official CPCB CAAQMS "
+        "monitoring bulletins before strenuous outdoor exertion."
+    )
+
+
+def evaluate_assessment_recommendations(
+    assessment: "AirQualityPipelineResponse",
+    *,
+    activity: str = "walking",
+    sensitivity_preference: str = "general",
+    duration: str = "30-60m",
+) -> AssessmentRecommendationEvaluation:
+    """Evaluate authoritative pipeline outputs through reviewed deterministic rules (no LLM)."""
+    idx = assessment.indicative_index
+    pollutant_status = {code: detail.status for code, detail in assessment.pollutants.items()}
+    sufficient_pollutants = [code for code, st in pollutant_status.items() if st == "SUFFICIENT"]
+    incomplete_pollutants = [code for code, st in pollutant_status.items() if st != "SUFFICIENT"]
+
+    rules: List[TriggeredRule] = []
+    uncertainty: List[str] = [
+        "Underlying index is INDICATIVE_MODEL_INDEX derived from Copernicus CAMS atmospheric grid simulations, not a physical CPCB monitoring station."
+    ]
+
+    # Gate 1: Composite INDICATIVE_MODEL_INDEX sufficiency (Architecture v2.4.3 Section 10 Tier A)
+    if idx.status != "AVAILABLE" or idx.value is None or idx.category is None:
+        rules.append(
+            TriggeredRule(
+                rule_id="RULE-GATE-INDEX-SUFFICIENCY",
+                scope="DATA_PROVENANCE",
+                status="BLOCKED",
+                required_pollutants=["pm25|pm10", ">=3 criteria pollutants"],
+                reason=idx.eligibility_reason,
+            )
+        )
+        uncertainty.append(idx.eligibility_reason)
+        return AssessmentRecommendationEvaluation(
+            status="INSUFFICIENT_DATA",
+            recommendation=None,
+            triggered_rules=rules,
+            pollutant_context_status=pollutant_status,
+            uncertainty_notes=uncertainty,
+            safe_general_guidance=(
+                "Verified air quality evidence is currently insufficient to generate activity-specific risk guidance. "
+                "Avoid assuming air quality is safe solely due to missing sensor data, and check local official CPCB CAAQMS bulletins."
+            ),
+        )
+
+    # Gate 2: Core deterministic product-rule evaluation from validated indicative index
+    base_rec = generate_recommendations(
+        aqi_category=idx.category,
+        aqi=idx.value,
+        dominant_pollutant=idx.dominant_pollutant,
+        activity=activity,
+        vulnerability_group=sensitivity_preference,
+        duration=duration,
+    )
+
+    rules.append(
+        TriggeredRule(
+            rule_id=f"RULE-CAT-{idx.category}-{base_rec.advisory_level.value}",
+            scope="PRODUCT_ACTIVITY_RULE",
+            status="APPLIED",
+            required_pollutants=list(idx.eligible_pollutants),
+            optional_pollutants=incomplete_pollutants,
+            reason=(
+                f"Product preventive guidance triggered for CPCB indicative category {idx.category} "
+                f"(value={idx.value}), activity='{base_rec.activity.value}', "
+                f"sensitivity='{base_rec.vulnerability_group.value}', duration='{base_rec.duration.value}'."
+            ),
+        )
+    )
+
+    # Gate 3: Dominant pollutant caveat traceability (only if verified sufficient)
+    dom_code = idx.dominant_pollutant
+    if dom_code and pollutant_status.get(dom_code) == "SUFFICIENT":
+        rules.append(
+            TriggeredRule(
+                rule_id=f"RULE-DOMINANT-{dom_code.upper()}",
+                scope="POLLUTANT_CAVEAT",
+                status="APPLIED",
+                required_pollutants=[dom_code],
+                reason=f"Dominant driver '{dom_code}' passed rolling-window coverage sufficiency criteria.",
+            )
+        )
+
+    # Gate 4: Tier C incomplete pollutant specificity disclosure (e.g., unavailable NH3 in CAMS India)
+    if incomplete_pollutants:
+        rules.append(
+            TriggeredRule(
+                rule_id="RULE-TIER-C-INCOMPLETE-POLLUTANTS",
+                scope="DATA_PROVENANCE",
+                status="ISSUED_WITH_REDUCED_SPECIFICITY",
+                required_pollutants=sufficient_pollutants,
+                optional_pollutants=incomplete_pollutants,
+                reason=(
+                    f"Guidance issued with reduced specificity because pollutant(s) "
+                    f"[{', '.join(incomplete_pollutants)}] are UNAVAILABLE or INSUFFICIENT_DATA "
+                    "(never treated as zero)."
+                ),
+            )
+        )
+        uncertainty.append(
+            f"Excluded incomplete pollutant(s): {', '.join(incomplete_pollutants)} (not substituted with zero)."
+        )
+
+    # Gate 5: Temporal governance & cycle freshness uncertainty disclosure (Stage 2.1 + Stage 3.2.2)
+    tg = assessment.temporal_governance
+    freshness = assessment.freshness
+    is_past_forecast = tg.valid_time_vs_retrieval == "PAST" and tg.model_run_relation == "FORECAST"
+    has_temporal_uncertainty = (
+        freshness.status in ("STALE_CYCLE", "UNKNOWN_RUN_AGE")
+        or tg.valid_time_vs_retrieval == "FUTURE"
+        or tg.model_run_relation in ("FORECAST", "UNKNOWN")
+    )
+
+    if has_temporal_uncertainty:
+        if is_past_forecast:
+            temporal_note = (
+                f"Past-valid forecast model output (valid_time={tg.valid_time.isoformat()}, "
+                f"valid_time_vs_retrieval=PAST, model_run_relation=FORECAST, lead={tg.forecast_lead_hours:.1f}h); "
+                "this is NOT a historical station analysis or physical observation."
+            )
+        elif tg.model_run_relation == "UNKNOWN" or freshness.status == "UNKNOWN_RUN_AGE":
+            temporal_note = (
+                f"Model initialization relationship or run age is unverified "
+                f"(valid_time_vs_retrieval={tg.valid_time_vs_retrieval}, model_run_relation={tg.model_run_relation}, "
+                f"freshness={freshness.status}); uncertainty is elevated."
+            )
+        else:
+            temporal_note = (
+                f"Temporal posture is {tg.valid_time_vs_retrieval}/{tg.model_run_relation} "
+                f"with cycle freshness '{freshness.status}'; certainty is reduced relative to current-cycle analyses."
+            )
+
+        rules.append(
+            TriggeredRule(
+                rule_id=f"RULE-TEMPORAL-{freshness.status}-{tg.valid_time_vs_retrieval}-{tg.model_run_relation}",
+                scope="DATA_PROVENANCE",
+                status="ISSUED_WITH_REDUCED_SPECIFICITY",
+                reason=temporal_note,
+            )
+        )
+        uncertainty.append(f"Temporal caveat: {temporal_note}")
+    else:
+        # Only CURRENT/PAST ANALYSIS cycles within CURRENT_CYCLE/AGING_CYCLE arrive here
+        rules.append(
+            TriggeredRule(
+                rule_id=f"RULE-PROVENANCE-VERIFIED-{tg.model_run_relation}-{freshness.status}",
+                scope="DATA_PROVENANCE",
+                status="APPLIED",
+                reason=(
+                    f"Model-derived context verified ({tg.valid_time_vs_retrieval}/{tg.model_run_relation}, "
+                    f"freshness={freshness.status}); guidance remains preventive product logic separate from CPCB regulation."
+                ),
+            )
+        )
+
+    return AssessmentRecommendationEvaluation(
+        status="AVAILABLE",
+        recommendation=base_rec,
+        triggered_rules=rules,
+        pollutant_context_status=pollutant_status,
+        uncertainty_notes=uncertainty,
     )

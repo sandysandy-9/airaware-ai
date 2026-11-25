@@ -57,7 +57,7 @@ export function AlertsManager({
             </div>
             <div>
               <h3 className="text-base font-bold text-white">Threshold Alert Manager</h3>
-              <p className="text-[11px] text-slate-400">Configure real-time air toxicity alerts</p>
+              <p className="text-[11px] text-slate-400">Configure indicative model index alerts (CAMS model-derived, not official station readings)</p>
             </div>
           </div>
           <button
@@ -113,7 +113,7 @@ export function AlertsManager({
 
                 <div>
                   <label className="text-[10px] text-slate-400 block mb-1">
-                    AQI Threshold ({threshold})
+                    Indicative Index Threshold ({threshold})
                   </label>
                   <input
                     type="range"
@@ -150,7 +150,7 @@ export function AlertsManager({
                       <div className="flex items-center space-x-2">
                         <span className="font-bold text-white">{rule.city}</span>
                         <span className="text-[11px] text-amber-400 font-semibold">
-                          AQI ≥ {rule.thresholdAqi}
+                          Indicative Index ≥ {rule.thresholdAqi}
                         </span>
                       </div>
                       <span className="text-[10px] text-slate-400">

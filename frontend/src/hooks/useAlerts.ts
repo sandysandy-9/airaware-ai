@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { AlertRule, TriggeredAlert, AirQualityCurrentResponse } from "../lib/types";
+import { AlertRule, TriggeredAlert, AirQualityPipelineResponse } from "../lib/types";
 
 const STORAGE_KEY_RULES = "airaware_alert_rules_v1";
 const STORAGE_KEY_HISTORY = "airaware_alert_history_v1";
@@ -18,7 +18,6 @@ export function useAlerts() {
       if (storedRules) {
         setRules(JSON.parse(storedRules));
       } else {
-        // Default rule: Alert when Delhi AQI exceeds 200 (Poor)
         const defaultRules: AlertRule[] = [
           {
             id: "rule-default-1",
@@ -70,17 +69,32 @@ export function useAlerts() {
   };
 
   const checkThreshold = useCallback(
-    (currentData: AirQualityCurrentResponse) => {
-      if (!currentData || currentData.aqi === null) return;
-      const aqi = currentData.aqi;
+    (currentData: AirQualityPipelineResponse) => {
+      if (!currentData || currentData.indicative_index.status !== "AVAILABLE") return;
+      const aqi = currentData.indicative_index.value;
+      if (aqi === null || aqi === undefined) return;
+
       const locName = currentData.location.name.toLowerCase();
+      const category = currentData.indicative_index.category || "Unknown";
+      const freshnessStatus = currentData.freshness?.status || "UNKNOWN_RUN_AGE";
+      const isStaleOrUnknown =
+        freshnessStatus === "STALE_CYCLE" ||
+        freshnessStatus === "UNKNOWN_RUN_AGE" ||
+        freshnessStatus === "AGING_CYCLE";
+      const freshnessDisclosure = isStaleOrUnknown
+        ? ` [Data freshness: ${freshnessStatus.replace(/_/g, " ")} — model cycle may be stale]`
+        : "";
 
       for (const rule of rules) {
         if (!rule.enabled) continue;
         const ruleCity = rule.city.toLowerCase();
-        if (locName.includes(ruleCity) || ruleCity.includes(locName) || rule.city === "All Cities") {
+        if (
+          locName.includes(ruleCity) ||
+          ruleCity.includes(locName) ||
+          rule.city === "All Cities"
+        ) {
           if (aqi >= rule.thresholdAqi) {
-            // Deduplicate: check if triggered in past 3 hours
+            // Deduplicate within 3 hours
             const threeHoursAgo = Date.now() - 3 * 60 * 60 * 1000;
             const recent = history.find(
               (h) =>
@@ -93,16 +107,19 @@ export function useAlerts() {
                 id: `alert-${Date.now()}`,
                 city: currentData.location.name,
                 aqi: aqi,
-                category: currentData.category || "Unhealthy",
+                category: category,
                 timestamp: new Date().toISOString(),
-                message: `Air Quality in ${currentData.location.name} has reached ${aqi} (${currentData.category}), exceeding your alert threshold of ${rule.thresholdAqi}.`,
+                message: `Indicative Model Index (CAMS model-derived estimate, not official CPCB station AQI) in ${currentData.location.name} is ${aqi} (${category}), exceeding your threshold of ${rule.thresholdAqi}.${freshnessDisclosure}`,
               };
 
               setActiveBanner(triggered);
               const updatedHistory = [triggered, ...history].slice(0, 20);
               setHistory(updatedHistory);
               try {
-                localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(updatedHistory));
+                localStorage.setItem(
+                  STORAGE_KEY_HISTORY,
+                  JSON.stringify(updatedHistory)
+                );
               } catch {}
             }
           }

@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "AirAware AI — Intelligent Urban Air Quality & Personalised Action Assistant",
   description:
-    "Real-time urban air quality intelligence platform using official CPCB NAQI methodology with deterministic health recommendations and grounded AI.",
+    "Indicative urban air quality intelligence platform using CPCB NAQI breakpoints on Copernicus CAMS Global model-derived estimates, deterministic health guidance, and server-grounded AI.",
 };
 
 export default function RootLayout({

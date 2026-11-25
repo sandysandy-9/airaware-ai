@@ -4,32 +4,33 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   Bot,
   Send,
-  Sparkles,
-  ShieldCheck,
-  AlertCircle,
-  HelpCircle,
   RefreshCw,
   User,
+  Info,
+  ShieldCheck,
 } from "lucide-react";
-import { AirQualityCurrentResponse, AIChatMessage } from "../lib/types";
+import { AirQualityPipelineResponse, AIChatMessage } from "../lib/types";
 import { SUGGESTED_QUESTIONS } from "../lib/constants";
 import { sendAIChat } from "../lib/api";
 
 interface AIChatDrawerProps {
-  currentAirQuality: AirQualityCurrentResponse;
-  comparisonContext?: AirQualityCurrentResponse[];
+  currentAirQuality: AirQualityPipelineResponse;
 }
 
-export function AIChatDrawer({ currentAirQuality, comparisonContext }: AIChatDrawerProps) {
+export function AIChatDrawer({ currentAirQuality }: AIChatDrawerProps) {
+  const idx = currentAirQuality.indicative_index;
+  const locationName = currentAirQuality.location.name;
+
   const [messages, setMessages] = useState<AIChatMessage[]>([
     {
       role: "assistant",
-      content: `Hello! I am your AirAware AI assistant. I am currently grounded with live observations from **${currentAirQuality.location.name}** (CPCB AQI: **${currentAirQuality.aqi ?? "N/A"}** - ${currentAirQuality.category ?? "Unknown"}). How can I assist with precautions, pollutant analysis, or activity recommendations today?`,
+      content: `Hello! I am your AirAware AI assistant. I am currently grounded with model-derived estimates for **${locationName}** (Indicative Index: **${idx.value ?? "N/A"}** - ${idx.category ?? "Unknown"}). How can I help with precautions, pollutant analysis, or activity recommendations today?`,
     },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [modelUsed, setModelUsed] = useState<string>("Grounded AI Engine");
+  const [explanationMode, setExplanationMode] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -51,22 +52,25 @@ export function AIChatDrawer({ currentAirQuality, comparisonContext }: AIChatDra
     setLoading(true);
 
     try {
+      // NEVER send current_context or comparison_context — backend forbids them.
       const resp = await sendAIChat({
         message: text,
-        current_context: currentAirQuality,
-        comparison_context: comparisonContext,
-        chat_history: updatedHistory.slice(-6),
+        city: locationName,
+        latitude: currentAirQuality.coordinates.requested_latitude,
+        longitude: currentAirQuality.coordinates.requested_longitude,
+        chat_history: updatedHistory.slice(-10),
       });
 
       setModelUsed(resp.model_used);
+      setExplanationMode(resp.explanation_mode);
       setMessages([...updatedHistory, { role: "assistant", content: resp.reply }]);
-    } catch (err: any) {
+    } catch {
       setMessages([
         ...updatedHistory,
         {
           role: "assistant",
           content:
-            "I encountered an issue connecting to the AI inference service. However, verified dashboard readings and deterministic recommendations remain fully accessible above.",
+            "I encountered an issue connecting to the AI inference service. However, the deterministic dashboard and recommendation engine remain fully accessible above.",
         },
       ]);
     } finally {
@@ -84,19 +88,26 @@ export function AIChatDrawer({ currentAirQuality, comparisonContext }: AIChatDra
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <h3 className="text-base font-bold text-white tracking-tight">AI Environmental Assistant</h3>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                Grounded Context
+              <h3 className="text-base font-bold text-white tracking-tight">
+                AI Environmental Assistant
+              </h3>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 whitespace-nowrap shrink-0">
+                Server-Grounded
               </span>
             </div>
             <p className="text-xs text-slate-400">
-              Active Context: {currentAirQuality.location.name} • {modelUsed}
+              Context: {locationName} • {modelUsed}
+              {explanationMode && (
+                <span className="ml-1.5 text-[10px] text-slate-500">
+                  ({explanationMode === "llm_grounded" ? "LLM Grounded" : "Deterministic Fallback"})
+                </span>
+              )}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Suggested Quick Questions */}
+      {/* Quick Questions */}
       <div className="py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar border-b border-navy-800/60">
         {SUGGESTED_QUESTIONS.map((q, idx) => (
           <button
@@ -110,14 +121,16 @@ export function AIChatDrawer({ currentAirQuality, comparisonContext }: AIChatDra
         ))}
       </div>
 
-      {/* Messages Scroll Area */}
+      {/* Messages */}
       <div className="flex-1 overflow-y-auto py-4 space-y-4 pr-1">
-        {messages.map((m, idx) => {
+        {messages.map((m, i) => {
           const isUser = m.role === "user";
           return (
             <div
-              key={idx}
-              className={`flex items-start space-x-2.5 ${isUser ? "flex-row-reverse space-x-reverse" : ""}`}
+              key={i}
+              className={`flex items-start space-x-2.5 ${
+                isUser ? "flex-row-reverse space-x-reverse" : ""
+              }`}
             >
               <div
                 className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 text-xs font-bold ${
@@ -145,13 +158,13 @@ export function AIChatDrawer({ currentAirQuality, comparisonContext }: AIChatDra
         {loading && (
           <div className="flex items-center space-x-2 text-xs text-slate-400 bg-navy-850 p-3 rounded-2xl w-fit">
             <RefreshCw className="w-3.5 h-3.5 animate-spin text-cyan-400" />
-            <span>Formulating grounded response from verified measurements...</span>
+            <span>Formulating server-grounded response...</span>
           </div>
         )}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Form */}
+      {/* Input */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -163,21 +176,25 @@ export function AIChatDrawer({ currentAirQuality, comparisonContext }: AIChatDra
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask a question about current air quality, precautions, or pollutants..."
+          placeholder="Ask about air quality, precautions, or pollutants..."
           className="flex-1 bg-navy-850 border border-navy-700 rounded-2xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
+          aria-label="Chat message input"
         />
         <button
           type="submit"
           disabled={!input.trim() || loading}
           className="p-2.5 rounded-2xl bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-slate-950 font-bold transition-all shadow-md"
+          aria-label="Send message"
         >
           <Send className="w-4 h-4" />
         </button>
       </form>
 
-      {/* Grounding & Ethics Footer */}
+      {/* Footer */}
       <p className="text-[10px] text-slate-400 text-center mt-2">
-        AirAware AI responses are strictly grounded in CPCB guidelines and verified data. No medical diagnoses are provided.
+        AI responses are grounded in server-verified CAMS model data using CPCB guidelines. No
+        medical diagnoses are provided. Data reflects model-derived estimates, not physical station
+        observations.
       </p>
     </div>
   );

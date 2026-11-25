@@ -1,14 +1,16 @@
 # AirAware AI — Intelligent Urban Air Quality Monitoring & Personalised Action Assistant
 
-> **A production-ready environmental intelligence platform that transforms real atmospheric data into location-aware, accessible, and actionable health guidance using India's official CPCB National Air Quality Index (NAQI) standard.**
+> **An environmental intelligence platform that transforms Copernicus CAMS Global atmospheric model data into location-aware, accessible, and actionable health guidance using India's CPCB National Air Quality Index (NAQI) breakpoints (`INDICATIVE_MODEL_INDEX`).**
 
 ---
 
 ## 1. Project Overview
 
-**AirAware AI** is an intelligent environmental health companion designed to solve the acute usability, reliability, and data integrity challenges associated with urban air pollution. 
+- **Selected Vertical:** Urban Air Quality Assistant (Hack2Skill Challenge 6)
 
-Unlike generic AQI apps that merely display raw numbers or attach an ungrounded chatbot that hallucinates air quality values, AirAware AI integrates **verified, real-world criteria pollutant measurements** (PM2.5, PM10, NO2, SO2, CO, O3) and evaluates them through the **official Central Pollution Control Board (CPCB) National Air Quality Index (NAQI)** calculation methodology. It couples this with a **deterministic, evidence-based Personalised Action Studio** and a **strictly grounded AI conversational assistant** that operates reliably both online and completely offline.
+**AirAware AI** is an urban air quality assistant designed to solve the usability, reliability, and data-integrity challenges associated with interpreting urban air pollution.
+
+Unlike generic AQI apps that display raw numbers without context or attach an ungrounded chatbot that invents air quality values, AirAware AI ingests **model-derived criteria pollutant series** (`PM2.5`, `PM10`, `NO2`, `SO2`, `CO`, `O3`) from Copernicus CAMS Global via Open-Meteo, applies Stage 1 gap-aware rolling-window integration, and evaluates them using India's **Central Pollution Control Board (CPCB) National Air Quality Index (NAQI)** breakpoints as a clearly labeled **`INDICATIVE_MODEL_INDEX`** (not an official CAAQMS station reading). It couples this with a **deterministic Personalised Action Studio** and a **server-grounded AI assistant** with automatic offline deterministic fallback.
 
 ---
 
@@ -26,52 +28,52 @@ Rapid urbanization and seasonal meteorological inversions across South Asia and 
 ## 3. Proposed Solution
 
 AirAware AI addresses these foundational issues through five engineering pillars:
-- **Zero Mock / Zero Fabricated Data**: Direct integration with verified atmospheric reanalysis and in-situ monitoring models (Open-Meteo & Copernicus Atmosphere Monitoring Service - CAMS) with clear observation timestamps and provenance.
-- **Official CPCB NAQI Engine**: Strict implementation of India's CPCB 8-pollutant linear interpolation formula, complete with official concentration breakpoints and the mandatory 3-pollutant sufficiency rule (including PM2.5/PM10).
-- **Deterministic Personalised Action Studio**: Rule-based decision matrix mapping AQI categories, dominant pollutants, 6 activity types, 6 vulnerability cohorts, and exposure durations to actionable precautions.
-- **Grounded AI Assistant with Offline Fallback**: Conversational agent that interprets verified data without hallucinating readings or overriding validated formulas, with a 100% functional offline deterministic rules engine.
-- **Transparent Multi-Location & Historical Intelligence**: Comparative analytics and hourly historical trends without fictitious data smoothing.
+- **Zero Mock / Zero Fabricated Data**: Direct integration with the Open-Meteo Air Quality API powered by Copernicus Atmosphere Monitoring Service (CAMS Global) model-derived estimates, with explicit temporal governance, grid-snap provenance, and cycle freshness indicators. Always labeled `INDICATIVE_MODEL_INDEX` (never misrepresented as an official CPCB physical CAAQMS station reading).
+- **CPCB NAQI Breakpoint & Rolling-Window Engine**: Trapezoidal rolling-window integration (`Gmax = 14,400s`), CPCB 8-pollutant linear interpolation breakpoints with `ROUND_HALF_UP` integer conversion, and the mandatory 3-pollutant sufficiency rule (including PM2.5 or PM10).
+- **Deterministic Personalised Action Studio**: Rule-based decision matrix mapping indicative index categories, dominant pollutants, 6 activity types, 6 vulnerability cohorts, and exposure durations to explainable precautions (`triggered_rules`).
+- **Server-Grounded AI Assistant with Offline Fallback**: Conversational agent that constructs an immutable server-side `VerifiedContextSnapshot` and fact registry (`extra="forbid"` rejects client-supplied AQI/context), with automatic deterministic fallback when `GEMINI_API_KEY` is unconfigured or LLM output fails verification.
+- **Transparent Multi-Location & Historical Intelligence**: Comparative analytics (`POST /api/v1/air-quality/compare`) and hourly historical trends with data integrity warnings.
 
 ---
 
 ## 4. Key Features
 
 ### Feature A — Comprehensive Air Quality Dashboard
-- **Semicircular SVG Gauge**: Visualizes composite CPCB AQI with official category colors (Good, Satisfactory, Moderate, Poor, Very Poor, Severe).
-- **Dominant Pollutant Callout**: Instantly highlights the primary pollutant driving the AQI and explains why it matters.
-- **Provenance Badges**: Displays monitoring location coordinates, observation timestamp, retrieval timestamp, data source, and freshness indicator.
+- **Semicircular SVG Gauge**: Visualizes the composite `INDICATIVE_MODEL_INDEX` with CPCB category colors (Good, Satisfactory, Moderate, Poor, Very Poor, Severe) and explicit non-station disclosure.
+- **Dominant Pollutant Callout**: Highlights the primary pollutant driving the indicative index and explains why it matters.
+- **Provenance Badges**: Displays city/grid coordinates (`geodesic_snap_distance_km`), `valid_time`, `retrieval_time`, data source (`cams_global`), and cycle freshness status (`CURRENT_CYCLE`, `AGING_CYCLE`, `STALE_CYCLE`).
 
 ### Feature B — Pollutant Intelligence Grid
-- **Real-Time Breakdown**: Interactive cards for PM2.5, PM10, NO2, SO2, CO, and O3 with standard concentrations ($\mu g/m^3$, $mg/m^3$) and individual sub-indices.
-- **Educational Deep-Dive**: Modals explaining chemical nature, primary emission sources (vehicular, industrial, agricultural), and acute vs. chronic respiratory effects.
-- **Honest Missing Data Handling**: Missing or unmonitored sensors are explicitly labeled as "Sensor Unavailable" rather than silently assumed to be zero.
+- **Model-Derived Breakdown**: Interactive cards for PM2.5, PM10, NO2, SO2, CO, O3, and NH3 with concentrations ($\mu g/m^3$, $mg/m^3$), averaging periods, and individual sub-indices.
+- **Educational Deep-Dive**: Modals explaining chemical nature, primary emission sources (vehicular, industrial, agricultural), and respiratory impacts.
+- **Honest Missing Data Handling**: Unavailable or insufficient pollutants (such as `NH3`) are explicitly labeled as unavailable rather than silently assumed to be zero.
 
 ### Feature C — Personalised Action Studio
 - **Multi-Factor Customization**:
   - **Activities**: Walking, Running, Cycling, Commuting, Outdoor Sports, Indoor.
   - **Sensitivity Cohorts**: General Adults, Children (<14 yrs), Elderly (60+ yrs), Asthma/Respiratory, Cardiovascular, Pregnant Individuals.
   - **Exposure Duration**: <30 mins, 30–60 mins, 1–2 hours, >2 hours.
-- **Actionable Outputs**: Risk advisory level, step-by-step precautions, certified respiratory mask recommendations (N95/FFP2), indoor ventilation advice, and health disclaimers.
+- **Actionable Outputs**: Risk advisory level, step-by-step precautions, protective mask guidance (N95/FFP2), indoor ventilation advice, `triggered_rules` provenance, uncertainty notes, and non-medical disclaimers.
 
 ### Feature D — Multi-Location Comparison
-- **Matrix Comparator**: Compare 2 to 6 monitored cities simultaneously (e.g., Delhi, Mumbai, Bengaluru, Kolkata, Chennai, Hyderabad).
-- **Side-by-Side Pollutant Breakdown**: Instant comparative analysis of AQI, dominant pollutants, and individual concentrations.
-- **Data Integrity Safeguard**: Warns users against comparing locations with disparate observation intervals or stale timestamps.
+- **Matrix Comparator**: Compare 2 to 6 supported cities simultaneously (e.g., New Delhi, Mumbai, Bengaluru, Kolkata, Chennai, Hyderabad).
+- **Side-by-Side Pollutant Breakdown**: Comparative table of indicative index values, dominant pollutants, and concentrations.
+- **Data Integrity Safeguard**: Surfaces warnings for mismatched timestamps, grid-cell snapping, or partial provider failures.
 
-### Feature E — Verified Historical Trends
-- **Hourly Historical Observations**: Area charts plotting 24 hours, 7 days, 14 days, or 30 days of real atmospheric data.
-- **Metric Toggling**: Switch between AQI, PM2.5, PM10, NO2, SO2, CO, and O3.
-- **Statistical Summary**: Instant calculation of period average, peak concentration, and cleanest recorded hour.
+### Feature E — Historical Trends
+- **Hourly Model Series**: Area charts plotting 24 hours, 7 days, 14 days, or 30 days of hourly CAMS atmospheric model data.
+- **Metric Toggling**: Switch between Index, PM2.5, PM10, NO2, SO2, CO, and O3.
+- **Statistical Summary**: Calculation of period average, peak reading, and lowest recorded hour.
 
-### Feature F — Grounded AI Assistant
-- **Verified Context Injection**: Feeds immutable environmental readings into the prompt.
-- **Quick Suggested Chips**: Single-click access to critical inquiries ("What does the AQI mean?", "Is running safe?", "Which pollutant is contributing most?").
-- **Offline Deterministic Fallback**: Provides reasoned, evidence-based answers even when no external LLM API key is present.
+### Feature F — Server-Grounded AI Assistant
+- **Immutable Server Context**: Backend assembles `VerifiedContextSnapshot` and a fact registry directly from provider assessments (`extra="forbid"` rejects client-supplied readings).
+- **Quick Suggested Chips**: Single-click access to key questions ("What does the current AQI mean for my health?", "Which pollutant is contributing most right now?").
+- **Deterministic Fallback**: Automatically discloses deterministic fallback mode and serves grounded factual guidance even without a `GEMINI_API_KEY`.
 
 ### Feature G — User-Configurable Threshold Alerts
-- **Customizable Thresholds**: Set personalized AQI alerts (e.g., trigger when AQI > 200).
-- **Duplicate Prevention**: Intelligently deduplicates alert triggers within a 3-hour window to avoid alert fatigue.
-- **Persistent Notification Log**: Stored safely in client-side storage.
+- **Customizable Thresholds**: Set client-side alerts on backend-assessed indicative index values (e.g., `>= 200`), with explicit staleness/model-derived disclosure.
+- **Duplicate Prevention**: Deduplicates alert triggers within a 3-hour window.
+- **Persistent Notification Log**: Stored in browser local storage.
 
 ### Feature H — Methodology & Provenance Transparency
 - Complete documentation of CPCB breakpoints, interpolation formula, and data provider attribution accessible directly within the application.
@@ -139,11 +141,10 @@ flowchart TD
 
 ## 7. Data Sources & Provenance
 
-AirAware AI queries real atmospheric observations and reanalysis data:
-- **Primary Live & Historical Provider**: Open-Meteo Air Quality API powered by the **Copernicus Atmosphere Monitoring Service (CAMS)** and global in-situ station networks.
-- **Averaging Periods**: 24-hour equivalent for PM2.5, PM10, NO2, SO2, NH3, Pb; 8-hour equivalent for CO and O3.
-- **Units**: Concentrations are in standard metric units ($\mu g/m^3$ for particulate matter and gases; $mg/m^3$ for carbon monoxide).
-- **Pluggable Architecture**: Includes extensible adapter interfaces for direct CPCB Central Control Room / data.gov.in and WAQI station feeds.
+AirAware AI queries model-derived atmospheric grid data:
+- **Primary Provider**: Open-Meteo Air Quality API powered by the **Copernicus Atmosphere Monitoring Service (`cams_global`)**. Values represent ~0.4° atmospheric model grid estimates (`INDICATIVE_MODEL_INDEX`), **not** physical CPCB continuous ambient air quality monitoring station (`CAAQMS`) measurements.
+- **Averaging Periods**: 24-hour rolling window for PM2.5, PM10, NO2, SO2, NH3, Pb; 8-hour rolling window for CO and O3 (`Gmax = 14,400s`).
+- **Units**: Concentrations are normalized to standard metric units ($\mu g/m^3$ for particulate matter and gases; $mg/m^3$ for carbon monoxide).
 
 ---
 
@@ -181,7 +182,7 @@ Where:
 ## 9. How the Application Works
 
 1. **Selection & Ingestion**: The user chooses a city from the quick switcher, searches for an urban center, or passes custom coordinates.
-2. **Verification & Calculation**: The backend fetches live atmospheric readings from Open-Meteo, normalizes units, and feeds them into `cpcb_calculator.py`.
+2. **Ingestion & Calculation**: The backend fetches CAMS Global series from Open-Meteo, normalizes units and temporal metadata (`temporal_validation.py`), integrates rolling windows (`rolling_window.py`), and computes `INDICATIVE_MODEL_INDEX` via `indicative_index.py` and `cpcb_calculator.py`.
 3. **Deterministic Evaluation**: `recommendation_rules.py` cross-references the AQI and dominant pollutant with the user's selected activity, vulnerability cohort, and exposure duration.
 4. **Context Grounding**: The AI assistant accepts the verified state as an immutable context envelope, answering questions without speculative extrapolation.
 5. **Real-time Alerting**: The frontend checks the calculated AQI against client-configured alert rules and surfaces immediate warning banners if thresholds are crossed.
@@ -244,9 +245,12 @@ See `.env.example`:
 | `PORT` | FastAPI backend server port | `8000` |
 | `HOST` | Backend bind address | `127.0.0.1` |
 | `ALLOWED_ORIGINS` | CORS permitted origins | `http://localhost:3000,http://127.0.0.1:3000` |
-| `GEMINI_API_KEY` | Google Gemini API key for conversational AI | *Optional* (Full offline fallback included) |
-| `WAQI_API_TOKEN` | World Air Quality Index station feed token | *Optional* |
-| `DATA_GOV_IN_API_KEY` | Open Government Data Platform India key | *Optional* |
+| `AIRAWARE_MAX_SUPPORTED_GAP_SECONDS` | Rolling-window max gap (`Gmax`) | `14400.0` (4 hours) |
+| `AIRAWARE_CACHE_TTL_SECONDS` | Backend response cache TTL | `600` |
+| `AIRAWARE_RATE_LIMIT_PER_MIN` | Per-client rate limit | `120` |
+| `GEMINI_API_KEY` | Google Gemini API key for conversational AI | *Optional* (Deterministic fallback included) |
+| `AIRAWARE_LLM_MODEL` | Gemini model identifier | `gemini-2.0-flash` |
+| `NEXT_PUBLIC_API_URL` | Frontend API base URL | `http://127.0.0.1:8000/api/v1` |
 
 ---
 
@@ -299,16 +303,17 @@ npm run build
    ```
    Open `http://localhost:3000` in any modern web browser.
 
-### Option B: Cloud Hosting (e.g. Render / Vercel / Railway / Docker)
-- Deploy `backend/` to any containerized Python service (Render / Railway / GCP Cloud Run).
-- Deploy `frontend/` to Vercel or Netlify, pointing `NEXT_PUBLIC_API_URL` to your live backend domain.
+### Option B: Cloud Hosting (Vercel + Render / Docker)
+See the full production guide in [DEPLOYMENT.md](./DEPLOYMENT.md):
+- **Backend (`backend/`)**: Deploy via `render.yaml` Blueprint or `backend/Dockerfile` (`healthCheckPath: /health`, `ENVIRONMENT=production`, `DEBUG=false`, explicit `ALLOWED_ORIGINS=https://<your-vercel-domain>`).
+- **Frontend (`frontend/`)**: Deploy to Vercel using `frontend/vercel.json` (`Root Directory: frontend`), setting `NEXT_PUBLIC_API_URL=https://<your-backend-domain>/api/v1`.
 
 ---
 
 ## 15. Assumptions & Limitations
 
-1. **Averaging Windows**: In-situ continuous ambient air quality stations calculate 24-hour moving averages. When querying remote meteorological models like Copernicus CAMS, hourly observations represent current hourly simulations and reanalysis.
-2. **Lead (Pb) & Ammonia (NH3)**: CPCB NAQI defines breakpoints for 8 pollutants. Lead (Pb) is measured manually via filter paper gravimetry and is rarely available in real-time telemetry; ammonia (NH3) sensors are only present in select tier-1 stations. AirAware AI gracefully marks these as unavailable without failing the overall calculation when other criteria pollutants suffice.
+1. **Model-Derived Estimates vs. Physical Stations**: AirAware AI uses Open-Meteo Copernicus CAMS Global atmospheric model data (`INDICATIVE_MODEL_INDEX`), not physical CPCB continuous ambient air quality monitoring station (CAAQMS) sensors. Model grid coordinates may be snapped from requested city-center coordinates (`geodesic_snap_distance_km`).
+2. **Lead (Pb) & Ammonia (NH3)**: CPCB NAQI defines breakpoints for 8 pollutants. Lead (Pb) and Ammonia (NH3) are typically unavailable in CAMS Global feeds. AirAware AI marks these as unavailable without failing the composite calculation when at least 3 criteria pollutants (including PM2.5 or PM10) meet rolling-window sufficiency.
 3. **Non-Clinical Nature**: Preventive recommendations are strictly educational and non-clinical.
 
 ---

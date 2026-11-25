@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: airaware-ai-backend
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: AIRAWARE_MAX_SUPPORTED_GAP_SECONDS
+        value: "14400.0"
+      - key: AIRAWARE_CACHE_TTL_SECONDS
+        value: "600"
+      - key: AIRAWARE_RATE_LIMIT_PER_MIN
+        value: "120"
+      - key: OPEN_METEO_CONNECT_TIMEOUT_SECONDS
+        value: "5.0"
+      - key: OPEN_METEO_READ_TIMEOUT_SECONDS
+        value: "12.0"
+      - key: AIRAWARE_LLM_PROVIDER
+        value: gemini
+      - key: AIRAWARE_LLM_MODEL
+        value: gemini-2.0-flash
+      - key: GEMINI_API_KEY
+        sync: false

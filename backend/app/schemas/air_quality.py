@@ -1,8 +1,12 @@
 """Data schemas for AirAware AI environmental data models."""
 
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, List, Literal, Optional
 from pydantic import BaseModel, Field
+
+from app.engine.indicative_index import IndicativeModelIndexResult
+from app.engine.rolling_window import RollingWindowResult
+from app.providers.models import TemporalGovernance
 
 
 class LocationInfo(BaseModel):
@@ -68,3 +72,82 @@ class HistoricalTrendsResponse(BaseModel):
     data_points: List[HistoricalPoint]
     total_points: int
     note: str = "Real historical hourly environmental measurements retrieved from atmospheric monitoring models."
+
+
+# --- Stage 3.1 Production Pipeline Schemas (v2.4.3 & Stage 2.1 Compliant) ---
+
+
+class CoordinateProvenance(BaseModel):
+    """Explicitly separates requested user coordinates from snapped model grid coordinates."""
+
+    requested_latitude: float
+    requested_longitude: float
+    returned_latitude: Optional[float] = None
+    returned_longitude: Optional[float] = None
+    geodesic_snap_distance_km: Optional[float] = None
+    elevation_m: Optional[float] = None
+    coordinate_role: str = "MODEL_GRID_ESTIMATE"
+    is_physical_station: Literal[False] = False
+
+
+class ProviderProvenance(BaseModel):
+    """Source model, domain, resolution status, and metadata provenance."""
+
+    provider_name: str
+    domain_requested: str
+    model_name: str
+    metadata_verified: bool
+    native_temporal_resolution: str = "UNKNOWN_PENDING_VERIFICATION"
+    meta_temporal_resolution_seconds: Optional[int] = None
+    api_output_frequency_seconds: Optional[int] = None
+    update_interval_seconds: Optional[int] = None
+    last_run_modification_time: Optional[datetime] = None
+    last_run_availability_time: Optional[datetime] = None
+    spatial_resolution_note: Optional[str] = None
+    cache_hit: bool = False
+
+
+class PollutantRollingDetail(BaseModel):
+    """Pollutant assessment derived strictly from frozen trapezoidal rolling-window integration."""
+
+    code: str
+    name: str
+    status: Literal["SUFFICIENT", "INSUFFICIENT_DATA", "UNAVAILABLE"]
+    concentration: Optional[float] = None
+    unit: str
+    reported_unit: Optional[str] = None
+    sub_index: Optional[int] = None
+    category: Optional[str] = None
+    color: Optional[str] = None
+    averaging_period: str
+    rolling_window: Optional[RollingWindowResult] = None
+    unavailable_reason: Optional[str] = None
+    description: str
+    health_effects: str
+    sources: str
+
+
+class FreshnessSummary(BaseModel):
+    """Transparent model-run cycle freshness derived from verified timestamps (never 'LIVE')."""
+
+    status: Literal["CURRENT_CYCLE", "AGING_CYCLE", "STALE_CYCLE", "UNKNOWN_RUN_AGE"]
+    cache_hit: bool
+    disclaimer: str
+
+
+class AirQualityPipelineResponse(BaseModel):
+    """Authoritative Stage 3.1 response for /api/v1/air-quality/current."""
+
+    status: Literal["SUCCESS", "INSUFFICIENT_DATA"]
+    status_message: str
+    index_type: Literal["INDICATIVE_MODEL_INDEX"] = "INDICATIVE_MODEL_INDEX"
+    is_official_cpcb_station_aqi: Literal[False] = False
+    location: LocationInfo
+    coordinates: CoordinateProvenance
+    provider: ProviderProvenance
+    indicative_index: IndicativeModelIndexResult
+    pollutants: Dict[str, PollutantRollingDetail]
+    unavailable_pollutants: List[str]
+    temporal_governance: TemporalGovernance
+    freshness: FreshnessSummary
+    warnings: List[str] = Field(default_factory=list)

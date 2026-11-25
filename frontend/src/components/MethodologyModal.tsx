@@ -175,7 +175,7 @@ export function MethodologyModal({ isOpen, onClose }: MethodologyModalProps) {
             <span>4. Data Sources & Provenance</span>
           </h4>
           <p className="leading-relaxed">
-            AirAware AI connects to <strong>Open-Meteo Air Quality API</strong> powered by the <strong>Copernicus Atmosphere Monitoring Service (CAMS)</strong> European reanalysis model coupled with global in-situ monitoring stations. Measurements are retrieved in standard units (µg/m³ for PM and gases, mg/m³ for CO) and verified through automated bounds checking.
+            AirAware AI connects to <strong>Open-Meteo Air Quality API</strong> powered by the <strong>Copernicus Atmosphere Monitoring Service (CAMS Global)</strong> atmospheric model. Measurements are retrieved in standard units (µg/m³ for PM and gases, mg/m³ for CO) and evaluated via rolling-window integration. Values represent an <strong>INDICATIVE_MODEL_INDEX</strong> and are <em>not</em> official CPCB physical monitoring station (CAAQMS) readings.
           </p>
         </div>
 

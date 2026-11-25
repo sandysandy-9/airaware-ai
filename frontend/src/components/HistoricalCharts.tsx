@@ -90,7 +90,7 @@ export function HistoricalCharts({ city }: HistoricalChartsProps) {
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-0.5">
-            Verified hourly environmental measurements for {trends?.location.name || city}
+            Model-derived hourly atmospheric estimates for {trends?.location.name || city}
           </p>
         </div>
 
@@ -226,8 +226,8 @@ export function HistoricalCharts({ city }: HistoricalChartsProps) {
 
       {/* Provenance Footer */}
       <div className="text-[11px] text-slate-400 flex items-center justify-between pt-3 border-t border-navy-800">
-        <span>Verified Data Source: {trends?.data_source || "Open-Meteo Copernicus CAMS"}</span>
-        <span className="italic">Zero fictional or simulated data points</span>
+        <span>Data Source: {trends?.data_source || "Open-Meteo Copernicus CAMS (Model-Derived)"}</span>
+        <span className="italic">Indicative model estimates — not physical station readings</span>
       </div>
     </div>
   );

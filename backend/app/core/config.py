@@ -16,12 +16,60 @@ def _parse_origins(raw: str) -> List[str]:
     return origins or ["http://localhost:3000", "http://127.0.0.1:3000"]
 
 
+_DISALLOWED_ATTESTATION_PLACEHOLDERS = frozenset(
+    {
+        "changeme",
+        "change-me",
+        "change_me",
+        "none",
+        "null",
+        "your-secret",
+        "your_secret",
+        "your-secret-here",
+        "your_secret_here",
+        "your_attestation_secret_here",
+        "your-attestation-secret-here",
+        "secret",
+        "default",
+        "example",
+        "placeholder",
+        "test",
+    }
+)
+MIN_ATTESTATION_SECRET_CHARS = 32
+
+
 def _normalize_optional_secret(val: Optional[str]) -> Optional[str]:
     if not val:
         return None
     cleaned = val.strip()
     if not cleaned or cleaned.lower() in {"your_gemini_api_key_here", "changeme", "none", "null"}:
         return None
+    return cleaned
+
+
+def validate_attestation_secret(val: Optional[str]) -> Optional[str]:
+    """Validate optional HMAC attestation secret.
+
+    - Unset or empty string returns None (single-worker ephemeral key fallback).
+    - Whitespace-only, known placeholders, or <32-char secrets fail closed with ValueError.
+    """
+    if val is None or val == "":
+        return None
+    if not isinstance(val, str):
+        raise ValueError("AIRAWARE_ATTESTATION_SECRET must be a string.")
+    if not val.strip():
+        raise ValueError("AIRAWARE_ATTESTATION_SECRET must not be whitespace-only.")
+    cleaned = val.strip()
+    lowered = cleaned.lower()
+    if lowered in _DISALLOWED_ATTESTATION_PLACEHOLDERS or lowered.startswith(
+        ("changeme", "your-secret", "your_secret", "placeholder")
+    ):
+        raise ValueError("AIRAWARE_ATTESTATION_SECRET uses a disallowed placeholder value.")
+    if len(cleaned) < MIN_ATTESTATION_SECRET_CHARS:
+        raise ValueError(
+            f"AIRAWARE_ATTESTATION_SECRET must be at least {MIN_ATTESTATION_SECRET_CHARS} characters long."
+        )
     return cleaned
 
 
@@ -93,8 +141,17 @@ class Settings:
     llm_max_input_chars: int = field(
         default_factory=lambda: max(100, int(os.getenv("AIRAWARE_LLM_MAX_INPUT_CHARS", "1000")))
     )
+    attestation_secret: Optional[str] = field(
+        default_factory=lambda: os.getenv("AIRAWARE_ATTESTATION_SECRET"),
+        repr=False,
+    )
 
     def __post_init__(self) -> None:
+        object.__setattr__(
+            self,
+            "attestation_secret",
+            validate_attestation_secret(self.attestation_secret),
+        )
         if self.environment.strip().lower() == "production":
             object.__setattr__(self, "debug", False)
             if "*" in self.allowed_origins:
@@ -117,6 +174,7 @@ class Settings:
             "llm_provider": self.llm_provider,
             "llm_model": self.llm_model,
             "llm_configured": bool(self.gemini_api_key),
+            "attestation_secret_configured": bool(self.attestation_secret),
             "llm_timeout_seconds": self.llm_timeout_seconds,
         }
 

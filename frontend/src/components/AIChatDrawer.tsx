@@ -6,28 +6,40 @@ import {
   Send,
   RefreshCw,
   User,
-  Info,
-  ShieldCheck,
 } from "lucide-react";
 import { AirQualityPipelineResponse, AIChatMessage } from "../lib/types";
 import { SUGGESTED_QUESTIONS } from "../lib/constants";
 import { sendAIChat } from "../lib/api";
+import {
+  classifyApiErrorMessage,
+  MAX_CHAT_MESSAGE_CHARS,
+} from "../lib/chatHistory";
 
 interface AIChatDrawerProps {
   currentAirQuality: AirQualityPipelineResponse;
+  activity?: string;
+  sensitivityPreference?: string;
+  duration?: string;
 }
 
-export function AIChatDrawer({ currentAirQuality }: AIChatDrawerProps) {
+export function AIChatDrawer({
+  currentAirQuality,
+  activity,
+  sensitivityPreference,
+  duration,
+}: AIChatDrawerProps) {
   const idx = currentAirQuality.indicative_index;
   const locationName = currentAirQuality.location.name;
 
   const [messages, setMessages] = useState<AIChatMessage[]>([
     {
       role: "assistant",
+      isLocalOnly: true,
       content: `Hello! I am your AirAware AI assistant. I am currently grounded with model-derived estimates for **${locationName}** (Indicative Index: **${idx.value ?? "N/A"}** - ${idx.category ?? "Unknown"}). How can I help with precautions, pollutant analysis, or activity recommendations today?`,
     },
   ]);
   const [input, setInput] = useState("");
+  const [validationError, setValidationError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [modelUsed, setModelUsed] = useState<string>("Grounded AI Engine");
   const [explanationMode, setExplanationMode] = useState<string>("");
@@ -45,9 +57,18 @@ export function AIChatDrawer({ currentAirQuality }: AIChatDrawerProps) {
     const text = messageText.trim();
     if (!text || loading) return;
 
+    if (text.length > MAX_CHAT_MESSAGE_CHARS) {
+      setValidationError(
+        `Question exceeds the ${MAX_CHAT_MESSAGE_CHARS}-character limit (${text.length}/${MAX_CHAT_MESSAGE_CHARS}). Please shorten your message.`
+      );
+      return;
+    }
+
+    setValidationError(null);
+    const priorHistory = messages;
     const userMsg: AIChatMessage = { role: "user", content: text };
-    const updatedHistory = [...messages, userMsg];
-    setMessages(updatedHistory);
+    const updatedMessages = [...priorHistory, userMsg];
+    setMessages(updatedMessages);
     setInput("");
     setLoading(true);
 
@@ -58,19 +79,31 @@ export function AIChatDrawer({ currentAirQuality }: AIChatDrawerProps) {
         city: locationName,
         latitude: currentAirQuality.coordinates.requested_latitude,
         longitude: currentAirQuality.coordinates.requested_longitude,
-        chat_history: updatedHistory.slice(-10),
+        activity,
+        sensitivity_preference: sensitivityPreference,
+        duration,
+        chat_history: priorHistory,
       });
 
       setModelUsed(resp.model_used);
       setExplanationMode(resp.explanation_mode);
-      setMessages([...updatedHistory, { role: "assistant", content: resp.reply }]);
-    } catch {
       setMessages([
-        ...updatedHistory,
+        ...updatedMessages,
         {
           role: "assistant",
-          content:
-            "I encountered an issue connecting to the AI inference service. However, the deterministic dashboard and recommendation engine remain fully accessible above.",
+          content: resp.reply,
+          historyContent: resp.history_summary || undefined,
+          attestation: resp.reply_attestation || undefined,
+        },
+      ]);
+    } catch (err: unknown) {
+      const classified = classifyApiErrorMessage(err);
+      setMessages([
+        ...updatedMessages,
+        {
+          role: "assistant",
+          isLocalOnly: true,
+          content: classified.message,
         },
       ]);
     } finally {
@@ -109,9 +142,9 @@ export function AIChatDrawer({ currentAirQuality }: AIChatDrawerProps) {
 
       {/* Quick Questions */}
       <div className="py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar border-b border-navy-800/60">
-        {SUGGESTED_QUESTIONS.map((q, idx) => (
+        {SUGGESTED_QUESTIONS.map((q, qIdx) => (
           <button
-            key={idx}
+            key={qIdx}
             onClick={() => handleSend(q)}
             disabled={loading}
             className="whitespace-nowrap px-3 py-1 rounded-xl bg-navy-850 hover:bg-navy-800 text-[11px] font-medium text-slate-300 hover:text-cyan-300 border border-navy-700/60 transition-colors shrink-0"
@@ -143,7 +176,7 @@ export function AIChatDrawer({ currentAirQuality }: AIChatDrawerProps) {
               </div>
 
               <div
-                className={`p-3.5 rounded-2xl text-xs max-w-[85%] leading-relaxed ${
+                className={`p-3.5 rounded-2xl text-xs max-w-[85%] leading-relaxed break-words overflow-hidden ${
                   isUser
                     ? "bg-cyan-600 text-white rounded-tr-none shadow-sm font-medium"
                     : "bg-navy-850/90 text-slate-200 border border-navy-700/60 rounded-tl-none whitespace-pre-wrap"
@@ -164,6 +197,13 @@ export function AIChatDrawer({ currentAirQuality }: AIChatDrawerProps) {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Inline Validation Message */}
+      {validationError && (
+        <div role="alert" className="mb-2 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-300">
+          {validationError}
+        </div>
+      )}
+
       {/* Input */}
       <form
         onSubmit={(e) => {
@@ -175,11 +215,20 @@ export function AIChatDrawer({ currentAirQuality }: AIChatDrawerProps) {
         <input
           type="text"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          maxLength={MAX_CHAT_MESSAGE_CHARS}
+          onChange={(e) => {
+            setInput(e.target.value);
+            if (validationError) setValidationError(null);
+          }}
           placeholder="Ask about air quality, precautions, or pollutants..."
           className="flex-1 bg-navy-850 border border-navy-700 rounded-2xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
           aria-label="Chat message input"
         />
+        {input.length >= 800 && (
+          <span className="text-[10px] text-slate-400 tabular-nums shrink-0">
+            {input.length}/{MAX_CHAT_MESSAGE_CHARS}
+          </span>
+        )}
         <button
           type="submit"
           disabled={!input.trim() || loading}

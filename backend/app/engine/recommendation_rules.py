@@ -151,24 +151,38 @@ def generate_recommendations(
     # Decision Matrix based on CPCB Official Categories
     if cat == "GOOD":
         level = AdvisoryLevel.NORMAL
-        headline = "Ideal Air Quality: Outdoor activities are safe for all groups."
-        precautions.append("Air quality poses no measurable health risk. Enjoy outdoor activities, sports, and exercise freely.")
-        precautions.append("Good time to naturally ventilate indoor spaces and exchange stale indoor air.")
-        gear = "No protective mask required."
+        headline = (
+            "Good Modeled Air Quality: Low indicative risk for outdoor activities based on CAMS estimates "
+            "(verify local conditions; not a physical station reading)."
+        )
+        precautions.append(
+            "Modeled pollutant concentrations indicate low health risk for most people, though street-level conditions and individual sensitivities can vary."
+        )
+        precautions.append(
+            "Generally favorable conditions to naturally ventilate indoor spaces unless nearby traffic or dust sources are present."
+        )
+        gear = "No special protective mask typically required for general outdoor activity."
 
     elif cat == "SATISFACTORY":
         if is_sensitive and is_high_intensity and is_long_duration:
             level = AdvisoryLevel.MODERATE
-            headline = "Acceptable Air Quality: Sensitive individuals should pace extended workouts."
-            precautions.append("Air quality is generally acceptable for healthy individuals.")
+            headline = "Satisfactory Modeled Air Quality: Sensitive individuals should pace extended workouts."
+            precautions.append("Modeled air quality is generally acceptable for healthy adults, though prolonged high-intensity exertion increases inhaled dose.")
             precautions.append(f"Individuals with {vuln.value} sensitivity should monitor for mild throat or airway irritation during prolonged exertion.")
             gear = "Comfortable cloth or surgical mask optional if sensitive to dust."
         else:
             level = AdvisoryLevel.NORMAL
-            headline = "Satisfactory Air Quality: Outdoor exercise and commuting are safe."
-            precautions.append("Air quality is considered acceptable for the vast majority of the population.")
-            precautions.append("Normal outdoor walks, cycling, and sports can proceed as planned.")
-            gear = "No special respiratory protection required for general public."
+            headline = (
+                "Satisfactory Modeled Air Quality: Lower modeled risk for outdoor exercise and commuting; "
+                "monitor individual sensitivity."
+            )
+            precautions.append(
+                "Modeled air quality is generally acceptable for most healthy adults, though unusually sensitive individuals may experience minor breathing discomfort."
+            )
+            precautions.append(
+                "Standard outdoor walks, cycling, and sports carry lower modeled exposure risk, subject to local street-level variation and model uncertainty."
+            )
+            gear = "No special respiratory protection typically required for the general public."
 
     elif cat == "MODERATE":
         if is_sensitive:

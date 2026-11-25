@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { AirQualityPipelineResponse } from "../lib/types";
 import { AQI_CATEGORY_META } from "../lib/constants";
+import { buildTemporalProvenanceItems } from "../lib/provenance";
 
 interface AQIGaugeProps {
   data: AirQualityPipelineResponse;
@@ -42,6 +43,8 @@ export function AQIGauge({ data }: AQIGaugeProps) {
       : data.freshness.status === "STALE_CYCLE"
       ? "Stale Cycle"
       : "Unknown Run Age";
+
+  const temporalItems = buildTemporalProvenanceItems(data.temporal_governance);
 
   return (
     <div className="bg-navy-900/90 border border-navy-800 rounded-3xl p-6 shadow-xl relative overflow-hidden">
@@ -215,35 +218,47 @@ export function AQIGauge({ data }: AQIGaugeProps) {
           )}
 
           {/* Provenance & Timestamps Footer */}
-          <div className="flex flex-wrap items-center justify-between pt-2 border-t border-navy-800 text-[11px] text-slate-400 gap-2">
-            <div className="flex items-center space-x-1.5">
-              <Clock className="w-3.5 h-3.5 text-slate-400" />
-              <span>
-                Valid:{" "}
-                {new Date(data.temporal_governance.valid_time).toLocaleString("en-IN")}
-              </span>
+          <div className="pt-2.5 border-t border-navy-800 text-[11px] text-slate-400 space-y-2">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center space-x-1.5">
+                <Database className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <span>
+                  {data.provider.provider_name} ({data.provider.domain_requested})
+                </span>
+              </div>
+              <div className="flex items-center space-x-1.5">
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    data.freshness.status === "CURRENT_CYCLE"
+                      ? "bg-emerald-400 animate-pulse"
+                      : data.freshness.status === "AGING_CYCLE"
+                      ? "bg-amber-400"
+                      : "bg-red-400"
+                  }`}
+                />
+                <span>{freshnessLabel}</span>
+                {data.freshness.cache_hit && (
+                  <span className="text-slate-500">(cached)</span>
+                )}
+              </div>
             </div>
-            <div className="flex items-center space-x-1.5">
-              <Database className="w-3.5 h-3.5 text-slate-400" />
-              <span>
-                {data.provider.provider_name} ({data.provider.domain_requested})
-              </span>
-            </div>
-            <div className="flex items-center space-x-1.5">
-              <span
-                className={`w-1.5 h-1.5 rounded-full ${
-                  data.freshness.status === "CURRENT_CYCLE"
-                    ? "bg-emerald-400 animate-pulse"
-                    : data.freshness.status === "AGING_CYCLE"
-                    ? "bg-amber-400"
-                    : "bg-red-400"
-                }`}
-              />
-              <span>{freshnessLabel}</span>
-              {data.freshness.cache_hit && (
-                <span className="text-slate-500">(cached)</span>
-              )}
-            </div>
+
+            {temporalItems.length > 0 && (
+              <div
+                aria-label="Model temporal provenance"
+                className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-slate-400"
+              >
+                {temporalItems.map((item) => (
+                  <div key={item.id} className="flex items-center gap-1.5">
+                    {item.id === "valid_time" && (
+                      <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                    )}
+                    <span className="text-slate-500">{item.label}:</span>
+                    <span className="font-mono text-slate-300">{item.value}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

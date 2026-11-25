@@ -8,10 +8,17 @@ import {
   Info,
 } from "lucide-react";
 import { ComparisonResponse } from "../lib/types";
-import { fetchComparison } from "../lib/api";
+import { fetchCities, fetchComparison } from "../lib/api";
 import { POPULAR_CITIES, AQI_CATEGORY_META } from "../lib/constants";
+import {
+  ComparisonCityOption,
+  resolveComparisonCityOptions,
+  toggleComparisonCitySelection,
+  buildComparisonRequestPayload,
+} from "../lib/comparison";
 
 export function LocationComparison() {
+  const [availableCities, setAvailableCities] = useState<ComparisonCityOption[]>(POPULAR_CITIES);
   const [selectedCities, setSelectedCities] = useState<string[]>([
     "delhi",
     "mumbai",
@@ -22,14 +29,27 @@ export function LocationComparison() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    let active = true;
+    fetchCities()
+      .then((list) => {
+        if (active) {
+          setAvailableCities(resolveComparisonCityOptions(list, POPULAR_CITIES));
+        }
+      })
+      .catch(() => {
+        // Keep POPULAR_CITIES as graceful fallback without inventing coordinates
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const loadComparison = async () => {
     setLoading(true);
     setError(null);
     try {
-      const payload = selectedCities.map((cid) => {
-        const city = POPULAR_CITIES.find((c) => c.id === cid);
-        return city ? { city: city.name } : { city: cid };
-      });
+      const payload = buildComparisonRequestPayload(selectedCities, availableCities);
       const data = await fetchComparison(payload);
       setComparisonData(data);
     } catch (err: unknown) {
@@ -48,15 +68,7 @@ export function LocationComparison() {
   }, [selectedCities]);
 
   const toggleCity = (cityId: string) => {
-    if (selectedCities.includes(cityId)) {
-      if (selectedCities.length > 2) {
-        setSelectedCities(selectedCities.filter((id) => id !== cityId));
-      }
-    } else {
-      if (selectedCities.length < 6) {
-        setSelectedCities([...selectedCities, cityId]);
-      }
-    }
+    setSelectedCities((prev) => toggleComparisonCitySelection(prev, cityId));
   };
 
   return (
@@ -93,7 +105,7 @@ export function LocationComparison() {
           Selected Cities (2 to 6):
         </span>
         <div className="flex flex-wrap gap-2">
-          {POPULAR_CITIES.map((c) => {
+          {availableCities.map((c) => {
             const isSelected = selectedCities.includes(c.id);
             return (
               <button

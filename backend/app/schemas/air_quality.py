@@ -71,7 +71,10 @@ class HistoricalTrendsResponse(BaseModel):
     interval: str = "1 hour"
     data_points: List[HistoricalPoint]
     total_points: int
-    note: str = "Real historical hourly environmental measurements retrieved from atmospheric monitoring models."
+    note: str = (
+        "Model-derived historical hourly atmospheric estimates from Open-Meteo Copernicus CAMS Global, "
+        "not physical monitoring station observations."
+    )
 
 
 # --- Stage 3.1 Production Pipeline Schemas (v2.4.3 & Stage 2.1 Compliant) ---

@@ -41,6 +41,9 @@ function formatFreshnessLabel(status?: string): string | undefined {
 export default function Home() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [selectedCityId, setSelectedCityId] = useState("delhi");
+  const [selectedActivity, setSelectedActivity] = useState("walking");
+  const [selectedVulnerability, setSelectedVulnerability] = useState("general");
+  const [selectedDuration, setSelectedDuration] = useState("30-60m");
   const [cities, setCities] = useState<CityInfo[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [airQuality, setAirQuality] = useState<AirQualityPipelineResponse | null>(null);
@@ -123,6 +126,7 @@ export default function Home() {
       {activeBanner && (
         <div
           role="alert"
+          aria-label="Air quality threshold alert"
           className="bg-red-500/20 border-b border-red-500/30 px-4 py-2.5 text-xs text-red-200 flex items-center justify-between"
         >
           <div className="max-w-7xl mx-auto w-full flex items-center space-x-2">
@@ -191,6 +195,7 @@ export default function Home() {
         {error && (
           <div
             role="alert"
+            aria-label="Data loading error"
             className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center justify-between"
           >
             <div className="flex items-center space-x-2">
@@ -198,8 +203,13 @@ export default function Home() {
               <span>{error}</span>
             </div>
             <button
+              type="button"
               onClick={() => {
-                const c = POPULAR_CITIES.find((x) => x.id === selectedCityId) || POPULAR_CITIES[0];
+                const c =
+                  cities.find((x) => x.id === selectedCityId) ||
+                  POPULAR_CITIES.find((x) => x.id === selectedCityId) ||
+                  POPULAR_CITIES[0];
+                setSearchQuery("");
                 loadData(c.name);
               }}
               className="px-3 py-1 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-xs font-bold text-amber-200"
@@ -239,14 +249,30 @@ export default function Home() {
                   pollutants={airQuality.pollutants}
                   unavailablePollutants={airQuality.unavailable_pollutants}
                 />
-                <RecommendationStudio currentAirQuality={airQuality} />
+                <RecommendationStudio
+                  currentAirQuality={airQuality}
+                  selectedActivity={selectedActivity}
+                  onActivityChange={setSelectedActivity}
+                  selectedVulnerability={selectedVulnerability}
+                  onVulnerabilityChange={setSelectedVulnerability}
+                  selectedDuration={selectedDuration}
+                  onDurationChange={setSelectedDuration}
+                />
               </div>
             )}
 
             {/* TAB 2: ACTION STUDIO */}
             {activeTab === "recommendations" && (
               <div className="animate-fadeIn">
-                <RecommendationStudio currentAirQuality={airQuality} />
+                <RecommendationStudio
+                  currentAirQuality={airQuality}
+                  selectedActivity={selectedActivity}
+                  onActivityChange={setSelectedActivity}
+                  selectedVulnerability={selectedVulnerability}
+                  onVulnerabilityChange={setSelectedVulnerability}
+                  selectedDuration={selectedDuration}
+                  onDurationChange={setSelectedDuration}
+                />
               </div>
             )}
 
@@ -267,7 +293,13 @@ export default function Home() {
             {/* TAB 5: AI CONVERSATIONAL ASSISTANT */}
             {activeTab === "ai-assistant" && (
               <div className="animate-fadeIn">
-                <AIChatDrawer currentAirQuality={airQuality} />
+                <AIChatDrawer
+                  key={airQuality.location.name}
+                  currentAirQuality={airQuality}
+                  activity={selectedActivity}
+                  sensitivityPreference={selectedVulnerability}
+                  duration={selectedDuration}
+                />
               </div>
             )}
           </div>

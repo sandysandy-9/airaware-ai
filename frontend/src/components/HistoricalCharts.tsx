@@ -46,7 +46,7 @@ export function HistoricalCharts({ city }: HistoricalChartsProps) {
   }, [city, pastDays]);
 
   const metricsConfig: Record<string, { label: string; unit: string; color: string }> = {
-    aqi: { label: "CPCB AQI", unit: "Index", color: "#f97316" },
+    aqi: { label: "Indicative Index", unit: "Index", color: "#f97316" },
     pm25: { label: "PM2.5", unit: "µg/m³", color: "#ef4444" },
     pm10: { label: "PM10", unit: "µg/m³", color: "#eab308" },
     no2: { label: "NO2", unit: "µg/m³", color: "#38bdf8" },
@@ -83,14 +83,9 @@ export function HistoricalCharts({ city }: HistoricalChartsProps) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-navy-800">
         <div>
-          <div className="flex items-center space-x-2">
-            <h3 className="text-xl font-bold text-white tracking-tight">Historical Air Quality Trends</h3>
-            <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
-              Feature E
-            </span>
-          </div>
+          <h3 className="text-xl font-bold text-white tracking-tight">Historical Air Quality Trends</h3>
           <p className="text-xs text-slate-400 mt-0.5">
-            Model-derived hourly atmospheric estimates for {trends?.location.name || city}
+            Model-derived hourly atmospheric estimates (Copernicus CAMS) for {trends?.location.name || city}
           </p>
         </div>
 
@@ -142,12 +137,12 @@ export function HistoricalCharts({ city }: HistoricalChartsProps) {
           <span className="text-xs text-slate-400">{currentCfg.unit}</span>
         </div>
         <div className="p-3.5 rounded-2xl bg-navy-850 border border-navy-700/60">
-          <span className="text-[11px] text-rose-400 font-semibold block">Peak Reading</span>
+          <span className="text-[11px] text-rose-400 font-semibold block">Peak Estimate</span>
           <span className="text-lg font-black text-rose-300">{max}</span>{" "}
           <span className="text-xs text-slate-400">{currentCfg.unit}</span>
         </div>
         <div className="p-3.5 rounded-2xl bg-navy-850 border border-navy-700/60">
-          <span className="text-[11px] text-emerald-400 font-semibold block">Cleanest Reading</span>
+          <span className="text-[11px] text-emerald-400 font-semibold block">Lowest Estimate</span>
           <span className="text-lg font-black text-emerald-300">{min}</span>{" "}
           <span className="text-xs text-slate-400">{currentCfg.unit}</span>
         </div>
@@ -157,7 +152,7 @@ export function HistoricalCharts({ city }: HistoricalChartsProps) {
       {loading ? (
         <div className="h-64 flex flex-col items-center justify-center space-y-2">
           <RefreshCw className="w-6 h-6 text-cyan-400 animate-spin" />
-          <span className="text-xs text-slate-400">Loading verified historical atmospheric data...</span>
+          <span className="text-xs text-slate-400">Loading model-derived historical atmospheric estimates...</span>
         </div>
       ) : chartData.length > 0 ? (
         <div className="h-72 w-full pt-4">
@@ -220,14 +215,16 @@ export function HistoricalCharts({ city }: HistoricalChartsProps) {
         </div>
       ) : (
         <div className="h-64 flex flex-col items-center justify-center text-xs text-slate-400">
-          No historical observation points available for this period.
+          No historical model estimate points available for this period.
         </div>
       )}
 
       {/* Provenance Footer */}
-      <div className="text-[11px] text-slate-400 flex items-center justify-between pt-3 border-t border-navy-800">
+      <div className="text-[11px] text-slate-400 flex flex-col sm:flex-row sm:items-center justify-between gap-1 pt-3 border-t border-navy-800">
         <span>Data Source: {trends?.data_source || "Open-Meteo Copernicus CAMS (Model-Derived)"}</span>
-        <span className="italic">Indicative model estimates — not physical station readings</span>
+        <span className="italic">
+          {trends?.note || "Indicative CAMS model estimates — not physical monitoring station observations"}
+        </span>
       </div>
     </div>
   );

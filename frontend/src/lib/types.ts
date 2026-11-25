@@ -180,8 +180,11 @@ export interface ComparisonResponse {
 
 export interface TriggeredRule {
   rule_id: string;
-  description: string;
-  effect: string;
+  scope: string;
+  status: "APPLIED" | "ISSUED_WITH_REDUCED_SPECIFICITY" | "BLOCKED" | string;
+  required_pollutants?: string[];
+  optional_pollutants?: string[];
+  reason: string;
 }
 
 export interface RecommendationResponse {
@@ -214,6 +217,9 @@ export interface RecommendationResponse {
 export interface AIChatMessage {
   role: "user" | "assistant";
   content: string;
+  attestation?: string;
+  historyContent?: string;
+  isLocalOnly?: boolean;
 }
 
 export interface AIChatResponse {
@@ -227,6 +233,8 @@ export interface AIChatResponse {
   verified_context: Record<string, unknown>;
   sources_cited: string[];
   warnings: string[];
+  history_summary?: string | null;
+  reply_attestation?: string | null;
   disclaimer: string;
 }
 

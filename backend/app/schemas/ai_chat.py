@@ -42,12 +42,13 @@ def _validate_clean_text(raw: str, *, field_label: str, max_len: int) -> str:
 
 
 class ChatMessage(BaseModel):
-    """Sanitized untrusted prior conversation turn; role restricted to user or assistant."""
+    """Sanitized prior conversation turn; optional server HMAC attestation marks unaltered backend summaries."""
 
     model_config = ConfigDict(extra="forbid")
 
     role: Literal["user", "assistant"]
     content: str = Field(..., min_length=1, max_length=1000)
+    attestation: Optional[str] = Field(None, min_length=64, max_length=64, pattern=r"^[0-9a-f]{64}$")
 
     @field_validator("content")
     @classmethod
@@ -266,6 +267,8 @@ class AIChatResponse(BaseModel):
     verified_context: VerifiedContextSnapshot
     sources_cited: List[str]
     warnings: List[str] = Field(default_factory=list)
+    history_summary: Optional[str] = None
+    reply_attestation: Optional[str] = None
     disclaimer: str = (
         "All numeric metrics reflect INDICATIVE_MODEL_INDEX computed on Copernicus CAMS Global atmospheric grid data, "
         "not an official CPCB physical monitoring station (CAAQMS) reading. Guidance is informational and does not "

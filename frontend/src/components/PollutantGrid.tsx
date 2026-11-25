@@ -53,10 +53,12 @@ export function PollutantGrid({ pollutants, unavailablePollutants = [] }: Pollut
             : null;
 
           return (
-            <div
+            <button
               key={code}
+              type="button"
               onClick={() => setSelectedPollutant(item)}
-              className="bg-navy-900/80 hover:bg-navy-850 border border-navy-800 hover:border-navy-700/80 rounded-2xl p-5 transition-all cursor-pointer shadow-lg group relative overflow-hidden"
+              aria-label={`View details for ${item.name} (${item.code.toUpperCase()})`}
+              className="w-full text-left bg-navy-900/80 hover:bg-navy-850 border border-navy-800 hover:border-navy-700/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-2xl p-5 transition-all cursor-pointer shadow-lg group relative overflow-hidden"
             >
               <div className="flex items-start justify-between">
                 <div>
@@ -67,12 +69,13 @@ export function PollutantGrid({ pollutants, unavailablePollutants = [] }: Pollut
                     {item.name}
                   </h4>
                 </div>
-                <button
-                  className="p-1 rounded-lg text-slate-400 group-hover:text-cyan-300 hover:bg-navy-800 transition-colors"
+                <span
+                  aria-hidden="true"
+                  className="p-1 rounded-lg text-slate-400 group-hover:text-cyan-300 transition-colors"
                   title="View pollutant details"
                 >
                   <Info className="w-4 h-4" />
-                </button>
+                </span>
               </div>
 
               <div className="mt-4 flex items-baseline justify-between">
@@ -126,14 +129,19 @@ export function PollutantGrid({ pollutants, unavailablePollutants = [] }: Pollut
               <div className="mt-2 text-[10px] text-slate-500">
                 {item.averaging_period} rolling avg
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
 
       {/* Detail Modal */}
       {selectedPollutant && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm animate-fadeIn">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="pollutant-modal-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm animate-fadeIn"
+        >
           <div className="bg-navy-900 border border-navy-700 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-navy-800">
               <div className="flex items-center space-x-2">
@@ -141,13 +149,17 @@ export function PollutantGrid({ pollutants, unavailablePollutants = [] }: Pollut
                   {selectedPollutant.code}
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">{selectedPollutant.name}</h3>
+                  <h3 id="pollutant-modal-title" className="text-base font-bold text-white">
+                    {selectedPollutant.name}
+                  </h3>
                   <span className="text-xs text-slate-400">
                     Unit: {selectedPollutant.unit} • {selectedPollutant.averaging_period} avg
                   </span>
                 </div>
               </div>
               <button
+                type="button"
+                aria-label="Close pollutant details modal"
                 onClick={() => setSelectedPollutant(null)}
                 className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-navy-800 transition-colors"
               >
@@ -196,6 +208,7 @@ export function PollutantGrid({ pollutants, unavailablePollutants = [] }: Pollut
 
             <div className="pt-2 border-t border-navy-800 flex justify-end">
               <button
+                type="button"
                 onClick={() => setSelectedPollutant(null)}
                 className="px-4 py-2 rounded-xl bg-navy-800 hover:bg-navy-700 text-xs font-semibold text-white transition-colors"
               >

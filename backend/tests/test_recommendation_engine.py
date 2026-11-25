@@ -21,7 +21,9 @@ def test_good_aqi_all_activities_low_risk():
         duration="1-2h",
     )
     assert res.advisory_level == AdvisoryLevel.NORMAL
-    assert "safe for all groups" in res.headline.lower()
+    assert "low indicative risk" in res.headline.lower()
+    assert "safe for all groups" not in res.headline.lower()
+    assert "are safe" not in res.headline.lower()
     assert len(res.actionable_precautions) > 0
 
 

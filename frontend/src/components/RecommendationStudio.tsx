@@ -18,17 +18,93 @@ import {
   VULNERABILITY_OPTIONS,
   DURATION_OPTIONS,
 } from "../lib/constants";
-import { AirQualityPipelineResponse, RecommendationResponse } from "../lib/types";
+import {
+  AirQualityPipelineResponse,
+  RecommendationResponse,
+  TriggeredRule,
+} from "../lib/types";
 import { fetchRecommendations } from "../lib/api";
+
+export function TriggeredRulesPanel({ rules }: { rules: TriggeredRule[] }) {
+  if (!rules || rules.length === 0) return null;
+  return (
+    <div className="bg-navy-850/80 border border-navy-700/60 rounded-2xl p-4 space-y-2.5">
+      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+        <FileText className="w-4 h-4 text-slate-400" />
+        <span>Triggered Rules ({rules.length})</span>
+      </h4>
+      <ul className="space-y-2">
+        {rules.map((rule, idx) => {
+          const statusRaw = (rule.status || "").trim();
+          const statusLabel = statusRaw ? statusRaw.replace(/_/g, " ") : "RECORDED";
+          const statusTone =
+            statusRaw === "BLOCKED"
+              ? "bg-red-500/15 text-red-300 border-red-500/30"
+              : statusRaw === "ISSUED_WITH_REDUCED_SPECIFICITY"
+              ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
+              : "bg-cyan-500/10 text-cyan-300 border-cyan-500/25";
+          const scopeLabel = rule.scope ? rule.scope.replace(/_/g, " ") : null;
+
+          return (
+            <li
+              key={rule.rule_id || idx}
+              className="text-[11px] text-slate-300 bg-navy-900/50 border border-navy-800/80 rounded-xl px-3 py-2 space-y-1"
+            >
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-mono text-cyan-300 font-semibold">
+                  {rule.rule_id || `RULE-${idx + 1}`}
+                </span>
+                <span
+                  className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${statusTone}`}
+                >
+                  {statusLabel}
+                </span>
+                {scopeLabel && (
+                  <span className="text-[10px] uppercase tracking-wider text-slate-400">
+                    {scopeLabel}
+                  </span>
+                )}
+              </div>
+              <p className="text-slate-300 leading-relaxed">
+                {rule.reason?.trim() || "Rule recorded without additional explanation."}
+              </p>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
 
 interface RecommendationStudioProps {
   currentAirQuality: AirQualityPipelineResponse;
+  selectedActivity?: string;
+  onActivityChange?: (activity: string) => void;
+  selectedVulnerability?: string;
+  onVulnerabilityChange?: (vulnerability: string) => void;
+  selectedDuration?: string;
+  onDurationChange?: (duration: string) => void;
 }
 
-export function RecommendationStudio({ currentAirQuality }: RecommendationStudioProps) {
-  const [selectedActivity, setSelectedActivity] = useState("walking");
-  const [selectedVulnerability, setSelectedVulnerability] = useState("general");
-  const [selectedDuration, setSelectedDuration] = useState("30-60m");
+export function RecommendationStudio({
+  currentAirQuality,
+  selectedActivity: controlledActivity,
+  onActivityChange,
+  selectedVulnerability: controlledVulnerability,
+  onVulnerabilityChange,
+  selectedDuration: controlledDuration,
+  onDurationChange,
+}: RecommendationStudioProps) {
+  const [internalActivity, setInternalActivity] = useState("walking");
+  const [internalVulnerability, setInternalVulnerability] = useState("general");
+  const [internalDuration, setInternalDuration] = useState("30-60m");
+
+  const selectedActivity = controlledActivity ?? internalActivity;
+  const setSelectedActivity = onActivityChange ?? setInternalActivity;
+  const selectedVulnerability = controlledVulnerability ?? internalVulnerability;
+  const setSelectedVulnerability = onVulnerabilityChange ?? setInternalVulnerability;
+  const selectedDuration = controlledDuration ?? internalDuration;
+  const setSelectedDuration = onDurationChange ?? setInternalDuration;
   const [recommendations, setRecommendations] = useState<RecommendationResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -250,22 +326,7 @@ export function RecommendationStudio({ currentAirQuality }: RecommendationStudio
           </div>
 
           {/* Triggered Rules */}
-          {recommendations.triggered_rules.length > 0 && (
-            <div className="bg-navy-850/80 border border-navy-700/60 rounded-2xl p-4 space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
-                <FileText className="w-4 h-4 text-slate-400" />
-                <span>Triggered Rules ({recommendations.triggered_rules.length})</span>
-              </h4>
-              <ul className="space-y-1.5">
-                {recommendations.triggered_rules.map((rule, idx) => (
-                  <li key={idx} className="text-[11px] text-slate-400">
-                    <span className="font-mono text-cyan-400/70">{rule.rule_id}</span>:{" "}
-                    {rule.description} → <span className="text-slate-300">{rule.effect}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <TriggeredRulesPanel rules={recommendations.triggered_rules} />
 
           {/* Uncertainty Notes */}
           {recommendations.uncertainty_notes.length > 0 && (

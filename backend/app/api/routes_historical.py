@@ -24,7 +24,7 @@ async def get_historical_air_quality(
     city: Optional[str] = Query(None, min_length=1, max_length=100, description="City name"),
     latitude: Optional[float] = Query(None, ge=-90.0, le=90.0),
     longitude: Optional[float] = Query(None, ge=-180.0, le=180.0),
-    past_days: int = Query(7, ge=1, le=30, description="Past days of hourly observations (1-30)"),
+    past_days: int = Query(7, ge=1, le=30, description="Past days of hourly model-derived estimates (1-30)"),
 ):
     """Retrieve model-derived hourly historical series and indicative CPCB calculations."""
     try:

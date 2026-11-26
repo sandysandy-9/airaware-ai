@@ -665,7 +665,7 @@ class OpenMeteoProvider(BaseAirQualityProvider):
                         logger.warning("Invalid JSON in metadata endpoint %s", meta_url)
                         return None, meta_url
                 return None, meta_url
-        except Exception:
+        except (httpx.HTTPError, ValueError):
             logger.warning("Failed to retrieve domain metadata from %s", meta_url)
             return None, meta_url
 
@@ -804,7 +804,7 @@ class OpenMeteoProvider(BaseAirQualityProvider):
             observation_time=obs_time,
             retrieval_time=now_iso,
             data_source=self.name,
-            data_freshness="LIVE (< 1h)",
+            data_freshness="MODEL_DERIVED_UNVERIFIED",
             pollutants=pollutant_details,
         )
 
@@ -814,39 +814,99 @@ class OpenMeteoProvider(BaseAirQualityProvider):
         latitude: float,
         longitude: float,
         past_days: int = 7,
+        reference_time_utc: Optional[datetime] = None,
     ) -> HistoricalTrendsResponse:
+        """Fetch model-derived hourly historical series strictly bounded at <= retrieval/reference UTC time."""
+        clamped_days = max(1, min(30, past_days))
         params = {
             "latitude": latitude,
             "longitude": longitude,
             "hourly": "pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone",
-            "past_days": max(1, min(30, past_days)),
-            "timezone": "auto",
+            "domains": settings.open_meteo_domain,
+            "past_days": clamped_days,
+            "forecast_days": 1,
+            "timezone": settings.open_meteo_timezone,
         }
-        async with httpx.AsyncClient(timeout=15.0) as client:
-            resp = await client.get(self.BASE_URL, params=params)
-            resp.raise_for_status()
-            data = resp.json()
-        hourly = data.get("hourly", {})
-        times = hourly.get("time", [])
+        try:
+            async with httpx.AsyncClient(timeout=self._client_timeout()) as client:
+                resp = await client.get(self.BASE_URL, params=params)
+                retrieval_utc = (reference_time_utc or datetime.now(timezone.utc)).astimezone(timezone.utc)
+                resp.raise_for_status()
+                try:
+                    data = resp.json()
+                except ValueError as exc:
+                    raise ProviderError(
+                        "Invalid JSON payload received from Open-Meteo historical API.",
+                        http_status=resp.status_code,
+                    ) from exc
+        except httpx.TimeoutException as exc:
+            raise ProviderError(
+                f"Open-Meteo historical request timed out after {self.timeout_seconds}s.",
+                is_timeout=True,
+            ) from exc
+        except httpx.HTTPStatusError as exc:
+            raise ProviderError(
+                f"Open-Meteo historical HTTP {exc.response.status_code} error.",
+                http_status=exc.response.status_code,
+            ) from exc
+        except httpx.RequestError as exc:
+            raise ProviderError(f"Open-Meteo historical connection failed: {type(exc).__name__}") from exc
+
+        if not isinstance(data, dict):
+            raise ProviderValidationError("Historical provider response root payload must be a JSON object.")
+        if data.get("error") is True:
+            raise ProviderValidationError(f"Provider returned historical API error: {data.get('reason', 'Unknown')}")
+
+        hourly = data.get("hourly")
+        if not isinstance(hourly, dict):
+            raise ProviderValidationError("Missing or invalid 'hourly' object in historical provider response.")
+
+        times = hourly.get("time")
+        if not isinstance(times, list):
+            raise ProviderValidationError("Missing or invalid 'hourly.time' array in historical provider response.")
+
+        provider_tz = data.get("timezone")
+        utc_offset = data.get("utc_offset_seconds")
+        earliest_utc = retrieval_utc - timedelta(days=clamped_days)
+
+        def _valid_float(arr_key: str, idx: int) -> Optional[float]:
+            arr = hourly.get(arr_key)
+            if not isinstance(arr, list) or idx >= len(arr):
+                return None
+            raw = arr[idx]
+            if raw is None or isinstance(raw, bool):
+                return None
+            try:
+                val = float(raw)
+            except (TypeError, ValueError):
+                return None
+            if not math.isfinite(val) or val < 0.0:
+                return None
+            return val
+
         points: List[HistoricalPoint] = []
         for i, t in enumerate(times):
-            def _val(key: str) -> Optional[float]:
-                arr = hourly.get(key, [])
-                return arr[i] if i < len(arr) else None
-            co_ug = _val("carbon_monoxide")
+            if not isinstance(t, str):
+                raise ProviderValidationError(f"Non-string timestamp at historical hourly.time[{i}].")
+            dt_utc, _ = parse_provider_timestamp_to_utc(t, provider_tz, utc_offset)
+            # Exclude future forecast horizon points and points older than requested lookback
+            if dt_utc > retrieval_utc or dt_utc < earliest_utc:
+                continue
+
+            co_ug = _valid_float("carbon_monoxide", i)
             co_mg = (co_ug / 1000.0) if co_ug is not None else None
             concs = {
-                "pm25": _val("pm2_5"),
-                "pm10": _val("pm10"),
-                "no2": _val("nitrogen_dioxide"),
-                "so2": _val("sulphur_dioxide"),
+                "pm25": _valid_float("pm2_5", i),
+                "pm10": _valid_float("pm10", i),
+                "no2": _valid_float("nitrogen_dioxide", i),
+                "so2": _valid_float("sulphur_dioxide", i),
                 "co": co_mg,
-                "o3": _val("ozone"),
+                "o3": _valid_float("ozone", i),
             }
             cpcb_res = calculate_cpcb_aqi(concs)
             points.append(
                 HistoricalPoint(
-                    timestamp=t,
+                    timestamp=dt_utc.isoformat(),
                     aqi=cpcb_res.aqi,
                     pm25=round(concs["pm25"], 1) if concs["pm25"] is not None else None,
                     pm10=round(concs["pm10"], 1) if concs["pm10"] is not None else None,
@@ -857,10 +917,11 @@ class OpenMeteoProvider(BaseAirQualityProvider):
                     dominant_pollutant=cpcb_res.dominant_pollutant,
                 )
             )
+
         return HistoricalTrendsResponse(
             location=LocationInfo(name=location_name, city=location_name, latitude=latitude, longitude=longitude),
-            start_time=times[0] if times else "",
-            end_time=times[-1] if times else "",
+            start_time=points[0].timestamp if points else "",
+            end_time=points[-1].timestamp if points else "",
             data_source=self.name,
             interval="1 hour",
             data_points=points,

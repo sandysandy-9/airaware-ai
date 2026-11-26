@@ -1,6 +1,5 @@
 """Stage 3.1 API routes for multi-location air quality comparison."""
 
-import asyncio
 from datetime import datetime, timezone
 import math
 from typing import Any, Dict, List, Optional
@@ -18,7 +17,7 @@ from app.schemas.comparison import (
     LocationComparisonResultItem,
     MultiLocationCompareRequest,
 )
-from app.services.air_quality_service import air_quality_service
+from app.services.air_quality_service import air_quality_service, rank_available_assessments
 
 logger = get_logger(__name__)
 router = APIRouter(prefix="/air-quality", tags=["Comparison"])
@@ -87,17 +86,7 @@ async def _run_comparison(queries: List[LocationComparisonQuery]) -> ComparisonR
         except ValueError as exc:
             raise HTTPException(status_code=422, detail={"error": "InvalidLocationQuery", "message": str(exc)}) from exc
 
-    tasks = [
-        air_quality_service.assess_location(
-            location_name=loc["name"],
-            city=loc.get("city", loc["name"]),
-            state=loc.get("state"),
-            latitude=loc["lat"],
-            longitude=loc["lon"],
-        )
-        for loc in resolved_locs
-    ]
-    raw_results = await asyncio.gather(*tasks, return_exceptions=True)
+    raw_results = await air_quality_service.assess_locations(resolved_locs)
 
     items: List[LocationComparisonResultItem] = []
     available_assessments: List[AirQualityPipelineResponse] = []
@@ -108,7 +97,7 @@ async def _run_comparison(queries: List[LocationComparisonQuery]) -> ComparisonR
     failed_count = 0
 
     for loc, res in zip(resolved_locs, raw_results):
-        if isinstance(res, (ProviderError, ProviderValidationError, Exception)):
+        if isinstance(res, Exception):
             failed_count += 1
             err_desc = (
                 "Upstream provider error or timeout."
@@ -144,21 +133,14 @@ async def _run_comparison(queries: List[LocationComparisonQuery]) -> ComparisonR
         if res.indicative_index.status == "AVAILABLE" and res.indicative_index.value is not None:
             available_assessments.append(res)
 
-    cleanest: Optional[str] = None
-    most_polluted: Optional[str] = None
     insufficient_count = sum(
         1
         for it in items
         if it.assessment is not None and it.assessment.indicative_index.status != "AVAILABLE"
     )
 
-    if len(available_assessments) >= 2:
-        available_assessments.sort(key=lambda a: a.indicative_index.value or 0)
-        c_first = available_assessments[0]
-        c_last = available_assessments[-1]
-        cleanest = f"{c_first.location.name} (INDICATIVE_MODEL_INDEX {c_first.indicative_index.value}, {c_first.indicative_index.category})"
-        most_polluted = f"{c_last.location.name} (INDICATIVE_MODEL_INDEX {c_last.indicative_index.value}, {c_last.indicative_index.category})"
-    else:
+    cleanest, most_polluted = rank_available_assessments(available_assessments)
+    if cleanest is None:
         warnings.append(
             f"Cleanest and most-polluted comparison rankings require at least 2 locations with valid "
             f"INDICATIVE_MODEL_INDEX values (found {len(available_assessments)}); ranking fields set to null."

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   AlertTriangle,
   RefreshCw,
@@ -19,6 +19,7 @@ import { AlertsManager } from "../components/AlertsManager";
 import { MethodologyModal } from "../components/MethodologyModal";
 import { useAlerts } from "../hooks/useAlerts";
 import { fetchCities, fetchCurrentAirQuality } from "../lib/api";
+import { parseLocationSearchInput, LocationSearchTarget } from "../lib/locationSearch";
 import { AirQualityPipelineResponse, CityInfo } from "../lib/types";
 import { POPULAR_CITIES } from "../lib/constants";
 
@@ -67,6 +68,10 @@ export default function Home() {
     clearHistory,
   } = useAlerts();
 
+  const loadSeqRef = useRef(0);
+  const checkThresholdRef = useRef(checkThreshold);
+  checkThresholdRef.current = checkThreshold;
+
   useEffect(() => {
     fetchCities()
       .then((list) => {
@@ -79,32 +84,39 @@ export default function Home() {
       });
   }, []);
 
-  const loadData = async (cityName: string) => {
+  const loadData = useCallback(async (target: string | LocationSearchTarget) => {
+    const seq = ++loadSeqRef.current;
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchCurrentAirQuality({ city: cityName });
-      setAirQuality(data);
-      checkThreshold(data);
+      const params = typeof target === "string" ? { city: target } : target;
+      const data = await fetchCurrentAirQuality(params);
+      if (seq === loadSeqRef.current) {
+        setAirQuality(data);
+        checkThresholdRef.current(data);
+      }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to load air quality estimates.";
-      setError(msg);
+      if (seq === loadSeqRef.current) {
+        const msg = err instanceof Error ? err.message : "Failed to load air quality estimates.";
+        setError(msg);
+      }
     } finally {
-      setLoading(false);
+      if (seq === loadSeqRef.current) {
+        setLoading(false);
+      }
     }
-  };
+  }, []);
 
   useEffect(() => {
-    const backendCity = cities.find((c) => c.id === selectedCityId);
     const fallbackCity = POPULAR_CITIES.find((c) => c.id === selectedCityId) || POPULAR_CITIES[0];
-    loadData(backendCity ? backendCity.name : fallbackCity.name);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCityId]);
+    loadData(fallbackCity.name);
+  }, [selectedCityId, loadData]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!searchQuery.trim()) return;
-    loadData(searchQuery.trim());
+    const parsed = parseLocationSearchInput(searchQuery);
+    if (!parsed) return;
+    loadData(parsed);
   };
 
   return (
@@ -144,7 +156,8 @@ export default function Home() {
       )}
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <main id="main-content" tabIndex={-1} className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 focus:outline-none">
+        <h1 className="sr-only">AirAware AI — Urban Air Quality Monitoring and Personalised Action Dashboard</h1>
         {/* Search & Location Bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <form onSubmit={handleSearchSubmit} className="relative w-full sm:w-96 flex gap-2">
@@ -154,9 +167,9 @@ export default function Home() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search supported Indian city (e.g. Delhi, Pune)..."
+                placeholder="Search Indian city or lat, lon (e.g. Delhi, 28.61, 77.21)..."
                 aria-label="Search city"
-                className="w-full bg-navy-900 border border-navy-800 focus:border-cyan-500 rounded-2xl pl-10 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                className="w-full bg-navy-900 border border-navy-800 focus:border-cyan-500 rounded-2xl pl-10 pr-4 py-2 text-xs text-white placeholder-slate-400 focus:outline-none transition-colors"
               />
             </div>
             <button
@@ -178,6 +191,8 @@ export default function Home() {
             ].map((tab) => (
               <button
                 key={tab.id}
+                type="button"
+                aria-current={activeTab === tab.id ? "page" : undefined}
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-3 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors border ${
                   activeTab === tab.id
@@ -296,6 +311,7 @@ export default function Home() {
                 <AIChatDrawer
                   key={airQuality.location.name}
                   currentAirQuality={airQuality}
+                  cities={cities}
                   activity={selectedActivity}
                   sensitivityPreference={selectedVulnerability}
                   duration={selectedDuration}
@@ -332,6 +348,7 @@ export default function Home() {
         onClose={() => setAlertsOpen(false)}
         rules={rules}
         history={history}
+        cities={cities}
         onAddRule={addRule}
         onToggleRule={toggleRule}
         onDeleteRule={deleteRule}

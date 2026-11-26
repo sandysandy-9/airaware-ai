@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   AlertTriangle,
   CheckCircle,
@@ -28,6 +28,7 @@ export function LocationComparison() {
   const [comparisonData, setComparisonData] = useState<ComparisonResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const requestSeqRef = useRef(0);
 
   useEffect(() => {
     let active = true;
@@ -45,27 +46,33 @@ export function LocationComparison() {
     };
   }, []);
 
-  const loadComparison = async () => {
+  const loadComparison = useCallback(async () => {
+    const seq = ++requestSeqRef.current;
     setLoading(true);
     setError(null);
     try {
       const payload = buildComparisonRequestPayload(selectedCities, availableCities);
       const data = await fetchComparison(payload);
-      setComparisonData(data);
+      if (seq === requestSeqRef.current) {
+        setComparisonData(data);
+      }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to compare locations";
-      setError(msg);
+      if (seq === requestSeqRef.current) {
+        const msg = err instanceof Error ? err.message : "Failed to compare locations";
+        setError(msg);
+      }
     } finally {
-      setLoading(false);
+      if (seq === requestSeqRef.current) {
+        setLoading(false);
+      }
     }
-  };
+  }, [selectedCities, availableCities]);
 
   useEffect(() => {
     if (selectedCities.length >= 2) {
       loadComparison();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCities]);
+  }, [selectedCities.length, loadComparison]);
 
   const toggleCity = (cityId: string) => {
     setSelectedCities((prev) => toggleComparisonCitySelection(prev, cityId));
@@ -110,11 +117,13 @@ export function LocationComparison() {
             return (
               <button
                 key={c.id}
+                type="button"
+                aria-pressed={isSelected}
                 onClick={() => toggleCity(c.id)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
                   isSelected
                     ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-sm"
-                    : "bg-navy-850 text-slate-400 hover:text-slate-200 border-navy-700/60 hover:border-navy-600"
+                    : "bg-navy-850 text-slate-300 hover:text-white border-navy-700/60 hover:border-navy-600"
                 }`}
               >
                 {c.name} {isSelected && "✓"}
@@ -245,7 +254,7 @@ export function LocationComparison() {
                             {catMeta.label}
                           </span>
                         ) : (
-                          <span className="text-slate-500">N/A</span>
+                          <span className="text-slate-400">N/A</span>
                         )}
                       </td>
                       <td className="px-4 py-3 font-medium text-slate-300 whitespace-nowrap">
@@ -280,7 +289,7 @@ export function LocationComparison() {
 
           {/* Provenance note */}
           <div className="text-[11px] text-slate-400 flex items-center gap-1.5">
-            <Info className="w-3.5 h-3.5 text-slate-500" />
+            <Info className="w-3.5 h-3.5 text-slate-400" />
             <span>
               All values are indicative model-derived estimates (CAMS Global), not official CPCB
               station readings.

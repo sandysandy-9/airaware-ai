@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   ShieldAlert,
   CheckCircle2,
@@ -108,8 +108,10 @@ export function RecommendationStudio({
   const [recommendations, setRecommendations] = useState<RecommendationResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const requestSeqRef = useRef(0);
 
-  const loadRecommendations = async () => {
+  const loadRecommendations = useCallback(async () => {
+    const seq = ++requestSeqRef.current;
     setLoading(true);
     setError(null);
     try {
@@ -122,19 +124,31 @@ export function RecommendationStudio({
         vulnerability_group: selectedVulnerability,
         duration: selectedDuration,
       });
-      setRecommendations(res);
+      if (seq === requestSeqRef.current) {
+        setRecommendations(res);
+      }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to calculate recommendations";
-      setError(msg);
+      if (seq === requestSeqRef.current) {
+        const msg = err instanceof Error ? err.message : "Failed to calculate recommendations";
+        setError(msg);
+      }
     } finally {
-      setLoading(false);
+      if (seq === requestSeqRef.current) {
+        setLoading(false);
+      }
     }
-  };
+  }, [
+    currentAirQuality.location.name,
+    currentAirQuality.coordinates.requested_latitude,
+    currentAirQuality.coordinates.requested_longitude,
+    selectedActivity,
+    selectedVulnerability,
+    selectedDuration,
+  ]);
 
   useEffect(() => {
     loadRecommendations();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedActivity, selectedVulnerability, selectedDuration, currentAirQuality.location.name]);
+  }, [loadRecommendations]);
 
   const advisoryColorMap: Record<string, { bg: string; text: string; border: string }> = {
     LOW_RISK: { bg: "bg-emerald-500/15", text: "text-emerald-400", border: "border-emerald-500/30" },
@@ -183,19 +197,21 @@ export function RecommendationStudio({
       {/* Selectors */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="space-y-2">
-          <label className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
             <Flame className="w-3.5 h-3.5 text-cyan-400" />
             <span>1. Planned Activity</span>
-          </label>
-          <div className="grid grid-cols-2 gap-2">
+          </h4>
+          <div role="group" aria-label="Planned Activity" className="grid grid-cols-2 gap-2">
             {ACTIVITY_OPTIONS.map((act) => (
               <button
                 key={act.id}
+                type="button"
+                aria-pressed={selectedActivity === act.id}
                 onClick={() => setSelectedActivity(act.id)}
                 className={`p-2.5 rounded-xl text-left text-xs font-semibold transition-all border ${
                   selectedActivity === act.id
                     ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-sm"
-                    : "bg-navy-850 text-slate-400 hover:text-slate-200 border-navy-700/60 hover:border-navy-600"
+                    : "bg-navy-850 text-slate-300 hover:text-white border-navy-700/60 hover:border-navy-600"
                 }`}
               >
                 {act.label}
@@ -205,19 +221,21 @@ export function RecommendationStudio({
         </div>
 
         <div className="space-y-2">
-          <label className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
             <Heart className="w-3.5 h-3.5 text-rose-400" />
             <span>2. Sensitivity Cohort</span>
-          </label>
-          <div className="space-y-1.5">
+          </h4>
+          <div role="group" aria-label="Sensitivity Cohort" className="space-y-1.5">
             {VULNERABILITY_OPTIONS.map((vuln) => (
               <button
                 key={vuln.id}
+                type="button"
+                aria-pressed={selectedVulnerability === vuln.id}
                 onClick={() => setSelectedVulnerability(vuln.id)}
                 className={`w-full p-2 rounded-xl text-left transition-all border ${
                   selectedVulnerability === vuln.id
                     ? "bg-rose-500/15 text-rose-300 border-rose-500/40 shadow-sm"
-                    : "bg-navy-850 text-slate-400 hover:text-slate-200 border-navy-700/60 hover:border-navy-600"
+                    : "bg-navy-850 text-slate-300 hover:text-white border-navy-700/60 hover:border-navy-600"
                 }`}
               >
                 <div className="text-xs font-semibold">{vuln.label}</div>
@@ -228,19 +246,21 @@ export function RecommendationStudio({
         </div>
 
         <div className="space-y-2">
-          <label className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5 text-amber-400" />
             <span>3. Expected Duration</span>
-          </label>
-          <div className="space-y-2">
+          </h4>
+          <div role="group" aria-label="Expected Duration" className="space-y-2">
             {DURATION_OPTIONS.map((dur) => (
               <button
                 key={dur.id}
+                type="button"
+                aria-pressed={selectedDuration === dur.id}
                 onClick={() => setSelectedDuration(dur.id)}
                 className={`w-full p-2.5 rounded-xl text-left text-xs font-semibold transition-all border ${
                   selectedDuration === dur.id
                     ? "bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm"
-                    : "bg-navy-850 text-slate-400 hover:text-slate-200 border-navy-700/60 hover:border-navy-600"
+                    : "bg-navy-850 text-slate-300 hover:text-white border-navy-700/60 hover:border-navy-600"
                 }`}
               >
                 {dur.label}

@@ -107,7 +107,7 @@ export function AQIGauge({ data }: AQIGaugeProps) {
             )}
           </div>
 
-          <div className="w-full flex justify-between px-4 text-[11px] font-semibold text-slate-500 -mt-3">
+          <div className="w-full flex justify-between px-4 text-[11px] font-semibold text-slate-400 -mt-3">
             <span>0 (Good)</span>
             <span>200</span>
             <span>500 (Severe)</span>
@@ -125,7 +125,7 @@ export function AQIGauge({ data }: AQIGaugeProps) {
               </h2>
               <p className="text-xs text-slate-400">
                 {data.location.city}, {data.location.state || "India"} •{" "}
-                <span className="font-mono text-slate-400">
+                <span className="font-mono text-slate-300">
                   {data.coordinates.returned_latitude?.toFixed(3) ??
                     data.coordinates.requested_latitude.toFixed(3)}
                   °N,{" "}
@@ -134,7 +134,7 @@ export function AQIGauge({ data }: AQIGaugeProps) {
                   °E
                 </span>
                 {data.coordinates.geodesic_snap_distance_km != null && (
-                  <span className="text-slate-500">
+                  <span className="text-slate-400">
                     {" "}
                     (grid snap: {data.coordinates.geodesic_snap_distance_km.toFixed(1)} km)
                   </span>
@@ -188,6 +188,9 @@ export function AQIGauge({ data }: AQIGaugeProps) {
               </div>
 
               <button
+                type="button"
+                aria-expanded={showDriverDetails}
+                aria-controls="dominant-pollutant-details"
                 onClick={() => setShowDriverDetails(!showDriverDetails)}
                 className="text-xs font-medium text-cyan-400 hover:text-cyan-300 flex items-center space-x-1 shrink-0"
               >
@@ -203,7 +206,10 @@ export function AQIGauge({ data }: AQIGaugeProps) {
 
           {/* Expandable details */}
           {showDriverDetails && dominantDetail && (
-            <div className="bg-navy-950/70 border border-navy-700/50 rounded-2xl p-4 text-xs text-slate-300 space-y-2 animate-fadeIn">
+            <div
+              id="dominant-pollutant-details"
+              className="bg-navy-950/70 border border-navy-700/50 rounded-2xl p-4 text-xs text-slate-300 space-y-2 animate-fadeIn"
+            >
               <div>
                 <strong className="text-white">Health Impact:</strong> {dominantDetail.health_effects}
               </div>
@@ -238,7 +244,7 @@ export function AQIGauge({ data }: AQIGaugeProps) {
                 />
                 <span>{freshnessLabel}</span>
                 {data.freshness.cache_hit && (
-                  <span className="text-slate-500">(cached)</span>
+                  <span className="text-slate-400">(cached)</span>
                 )}
               </div>
             </div>
@@ -253,8 +259,8 @@ export function AQIGauge({ data }: AQIGaugeProps) {
                     {item.id === "valid_time" && (
                       <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                     )}
-                    <span className="text-slate-500">{item.label}:</span>
-                    <span className="font-mono text-slate-300">{item.value}</span>
+                    <span className="text-slate-400">{item.label}:</span>
+                    <span className="font-mono text-slate-200">{item.value}</span>
                   </div>
                 ))}
               </div>

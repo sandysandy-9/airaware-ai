@@ -275,9 +275,12 @@ test("DEF-07: page.tsx clears invalid searchQuery on Retry and gives distinct al
   assert.match(pageSrc, /setSearchQuery\(""\);\s*loadData\(c\.name\);/);
 });
 
+const modalDialogMod = loadTsModule("src/components/ModalDialog.tsx");
+
 test("DEF-08: PollutantGrid uses semantic button cards without nested buttons and globals.css defines :focus-visible", () => {
   const { PollutantGrid } = loadTsModule("src/components/PollutantGrid.tsx", {
     "../lib/constants": constantsMod,
+    "./ModalDialog": modalDialogMod,
   });
 
   const html = renderToStaticMarkup(

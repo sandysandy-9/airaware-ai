@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Info, AlertCircle, X } from "lucide-react";
 import { PollutantRollingDetail } from "../lib/types";
-import { AQI_CATEGORY_META } from "../lib/constants";
+import { ModalDialog } from "./ModalDialog";
 
 interface PollutantGridProps {
   pollutants: Record<string, PollutantRollingDetail>;
@@ -12,6 +12,7 @@ interface PollutantGridProps {
 
 export function PollutantGrid({ pollutants, unavailablePollutants = [] }: PollutantGridProps) {
   const [selectedPollutant, setSelectedPollutant] = useState<PollutantRollingDetail | null>(null);
+  const closeModal = useCallback(() => setSelectedPollutant(null), []);
 
   const displayList = ["pm25", "pm10", "no2", "so2", "co", "o3", "nh3"];
 
@@ -34,13 +35,13 @@ export function PollutantGrid({ pollutants, unavailablePollutants = [] }: Pollut
             return (
               <div
                 key={code}
-                className="bg-navy-900/80 border border-navy-800 rounded-2xl p-5 opacity-60"
+                className="bg-navy-900/80 border border-navy-800 rounded-2xl p-5 opacity-75"
               >
-                <span className="text-xs uppercase font-bold text-slate-500 tracking-wider">
+                <span className="text-xs uppercase font-bold text-slate-400 tracking-wider">
                   {code.toUpperCase()}
                 </span>
-                <div className="mt-4 flex items-center space-x-1.5 text-slate-500 py-1">
-                  <AlertCircle className="w-4 h-4 text-slate-500" />
+                <div className="mt-4 flex items-center space-x-1.5 text-slate-400 py-1">
+                  <AlertCircle className="w-4 h-4 text-slate-400" />
                   <span className="text-xs font-medium">Not Available</span>
                 </div>
               </div>
@@ -48,9 +49,6 @@ export function PollutantGrid({ pollutants, unavailablePollutants = [] }: Pollut
           }
 
           const isMissing = item.status !== "SUFFICIENT" || item.concentration === null;
-          const catMeta = item.category
-            ? AQI_CATEGORY_META[item.category as keyof typeof AQI_CATEGORY_META]
-            : null;
 
           return (
             <button
@@ -80,8 +78,8 @@ export function PollutantGrid({ pollutants, unavailablePollutants = [] }: Pollut
 
               <div className="mt-4 flex items-baseline justify-between">
                 {isMissing ? (
-                  <div className="flex items-center space-x-1.5 text-slate-500 py-1">
-                    <AlertCircle className="w-4 h-4 text-slate-500" />
+                  <div className="flex items-center space-x-1.5 text-slate-400 py-1">
+                    <AlertCircle className="w-4 h-4 text-slate-400" />
                     <span className="text-xs font-medium">
                       {item.status === "UNAVAILABLE"
                         ? item.unavailable_reason || "Unavailable"
@@ -126,7 +124,7 @@ export function PollutantGrid({ pollutants, unavailablePollutants = [] }: Pollut
               </div>
 
               {/* Averaging period badge */}
-              <div className="mt-2 text-[10px] text-slate-500">
+              <div className="mt-2 text-[10px] text-slate-400">
                 {item.averaging_period} rolling avg
               </div>
             </button>
@@ -135,14 +133,14 @@ export function PollutantGrid({ pollutants, unavailablePollutants = [] }: Pollut
       </div>
 
       {/* Detail Modal */}
-      {selectedPollutant && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="pollutant-modal-title"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm animate-fadeIn"
-        >
-          <div className="bg-navy-900 border border-navy-700 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative space-y-4">
+      <ModalDialog
+        isOpen={Boolean(selectedPollutant)}
+        onClose={closeModal}
+        labelledBy="pollutant-modal-title"
+        containerClassName="space-y-4"
+      >
+        {selectedPollutant && (
+          <>
             <div className="flex items-center justify-between pb-3 border-b border-navy-800">
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-xs uppercase">
@@ -160,7 +158,7 @@ export function PollutantGrid({ pollutants, unavailablePollutants = [] }: Pollut
               <button
                 type="button"
                 aria-label="Close pollutant details modal"
-                onClick={() => setSelectedPollutant(null)}
+                onClick={closeModal}
                 className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-navy-800 transition-colors"
               >
                 <X className="w-5 h-5" />
@@ -192,32 +190,32 @@ export function PollutantGrid({ pollutants, unavailablePollutants = [] }: Pollut
             )}
 
             <div className="space-y-1.5">
-              <h5 className="text-xs font-bold uppercase tracking-wider text-cyan-400">What It Means</h5>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400">What It Means</h4>
               <p className="text-xs text-slate-300 leading-relaxed">{selectedPollutant.description}</p>
             </div>
 
             <div className="space-y-1.5">
-              <h5 className="text-xs font-bold uppercase tracking-wider text-orange-400">Health Impacts</h5>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-orange-400">Health Impacts</h4>
               <p className="text-xs text-slate-300 leading-relaxed">{selectedPollutant.health_effects}</p>
             </div>
 
             <div className="space-y-1.5">
-              <h5 className="text-xs font-bold uppercase tracking-wider text-emerald-400">Typical Emission Sources</h5>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400">Typical Emission Sources</h4>
               <p className="text-xs text-slate-300 leading-relaxed">{selectedPollutant.sources}</p>
             </div>
 
             <div className="pt-2 border-t border-navy-800 flex justify-end">
               <button
                 type="button"
-                onClick={() => setSelectedPollutant(null)}
+                onClick={closeModal}
                 className="px-4 py-2 rounded-xl bg-navy-800 hover:bg-navy-700 text-xs font-semibold text-white transition-colors"
               >
                 Close
               </button>
             </div>
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </ModalDialog>
     </div>
   );
 }

@@ -7,7 +7,6 @@ Implements:
 - Deeply immutable snapshot construction with canonical JSON + SHA-256 digest (MEDIUM-01).
 """
 
-import asyncio
 import hashlib
 import hmac
 import json
@@ -16,6 +15,7 @@ import secrets
 from typing import Any, Dict, List, Literal, Optional, Tuple
 import unicodedata
 import httpx
+from pydantic import ValidationError
 
 from app.core.config import settings, validate_attestation_secret
 from app.core.logging import get_logger, redact_secrets
@@ -27,7 +27,6 @@ from app.engine.recommendation_rules import (
     evaluate_assessment_recommendations,
 )
 from app.providers.factory import MAJOR_INDIAN_CITIES, resolve_location
-from app.providers.models import ProviderError, ProviderValidationError
 from app.schemas.ai_chat import (
     AIChatRequest,
     AIChatResponse,
@@ -40,7 +39,7 @@ from app.schemas.ai_chat import (
     VerifiedContextSnapshot,
 )
 from app.schemas.air_quality import AirQualityPipelineResponse
-from app.services.air_quality_service import air_quality_service
+from app.services.air_quality_service import air_quality_service, rank_available_assessments
 
 logger = get_logger(__name__)
 
@@ -240,9 +239,16 @@ def infer_chat_recommendation_context(req: AIChatRequest) -> Tuple[str, str]:
     return act, sens
 
 
+def _normalize_guardrail_text(text: str) -> str:
+    """Apply NFKC compatibility normalization and strip Unicode format chars before scanning."""
+    compat = unicodedata.normalize("NFKC", text)
+    return "".join(ch for ch in compat if unicodedata.category(ch) != "Cf")
+
+
 def _scan_text_for_injection(text: str) -> bool:
+    cleaned = _normalize_guardrail_text(text)
     for pat in _PROMPT_INJECTION_PATTERNS:
-        if pat.search(text):
+        if pat.search(cleaned):
             return True
     return False
 
@@ -712,7 +718,7 @@ class AIAssistantService:
 
         try:
             structured = StructuredLLMExplanation.model_validate_json(text)
-        except Exception:
+        except (ValidationError, ValueError):
             return None, "LLM response failed structured JSON grounding schema validation."
 
         if structured.claimed_is_official_station:
@@ -970,12 +976,82 @@ class AIAssistantService:
             except httpx.TimeoutException:
                 last_reason = f"LLM request timed out after {settings.llm_timeout_seconds:.1f}s."
                 logger.warning("Gemini timeout attempt=%d/%d", attempt + 1, attempts)
-            except Exception as exc:
+            except (httpx.HTTPError, ValueError, TypeError, KeyError) as exc:
                 last_reason = redact_secrets(f"LLM transport error ({type(exc).__name__}).")
                 logger.warning("Gemini unexpected failure: %s", type(exc).__name__)
                 break
 
         return None, last_reason
+
+    async def _build_comparison_snapshot(self, req: AIChatRequest) -> Optional[ComparisonSummarySnapshot]:
+        if not req.compare_locations:
+            return None
+        cmp_locs = [
+            resolve_location(city_name=q.city, latitude=q.latitude, longitude=q.longitude)
+            for q in req.compare_locations
+        ]
+        cmp_raw = await air_quality_service.assess_locations(cmp_locs)
+        items_summary: List[ComparisonItemSnapshot] = []
+        avail_assessments: List[AirQualityPipelineResponse] = []
+        for cl, res in zip(cmp_locs, cmp_raw):
+            if isinstance(res, Exception):
+                items_summary.append(
+                    ComparisonItemSnapshot(
+                        name=cl["name"],
+                        status="PROVIDER_UNAVAILABLE",
+                        error="Upstream provider failure",
+                    )
+                )
+            else:
+                idx = res.indicative_index
+                items_summary.append(
+                    ComparisonItemSnapshot(
+                        name=res.location.name,
+                        status=res.status,
+                        indicative_index=idx.value,
+                        category=idx.category,
+                        dominant_pollutant=idx.dominant_pollutant,
+                        valid_time=res.temporal_governance.valid_time.isoformat(),
+                    )
+                )
+                if idx.status == "AVAILABLE" and idx.value is not None:
+                    avail_assessments.append(res)
+        cleanest_str, most_polluted_str = rank_available_assessments(avail_assessments)
+        return ComparisonSummarySnapshot(
+            items=tuple(items_summary),
+            cleanest_location=cleanest_str,
+            most_polluted_location=most_polluted_str,
+        )
+
+    def _build_attested_chat_response(
+        self,
+        *,
+        reply: str,
+        explanation_mode: Literal["llm_grounded", "deterministic_fallback"],
+        model_used: str,
+        llm_fallback_used: bool,
+        llm_fallback_reason: Optional[str],
+        prompt_injection_detected: bool,
+        envelope: VerifiedContextSnapshot,
+        sources_cited: List[str],
+        warnings: List[str],
+        intent_label: str,
+    ) -> AIChatResponse:
+        hist_sum = self._build_history_summary(envelope, intent_label)
+        return AIChatResponse(
+            reply=reply,
+            grounded_in_data=True,
+            explanation_mode=explanation_mode,
+            model_used=model_used,
+            llm_fallback_used=llm_fallback_used,
+            llm_fallback_reason=llm_fallback_reason,
+            prompt_injection_detected=prompt_injection_detected,
+            verified_context=envelope,
+            sources_cited=sources_cited,
+            warnings=warnings,
+            history_summary=hist_sum,
+            reply_attestation=_compute_turn_attestation(hist_sum),
+        )
 
     async def generate_response(self, req: AIChatRequest) -> AIChatResponse:
         """Build deeply immutable authoritative envelope and explain strictly via verified data."""
@@ -987,62 +1063,7 @@ class AIAssistantService:
             latitude=loc["lat"],
             longitude=loc["lon"],
         )
-
-        comparison_summary: Optional[ComparisonSummarySnapshot] = None
-        if req.compare_locations:
-            cmp_locs = [
-                resolve_location(city_name=q.city, latitude=q.latitude, longitude=q.longitude)
-                for q in req.compare_locations
-            ]
-            cmp_raw = await asyncio.gather(
-                *[
-                    air_quality_service.assess_location(
-                        location_name=cl["name"],
-                        city=cl.get("city", cl["name"]),
-                        state=cl.get("state"),
-                        latitude=cl["lat"],
-                        longitude=cl["lon"],
-                    )
-                    for cl in cmp_locs
-                ],
-                return_exceptions=True,
-            )
-            items_summary: List[ComparisonItemSnapshot] = []
-            avail_items = []
-            for cl, res in zip(cmp_locs, cmp_raw):
-                if isinstance(res, (ProviderError, ProviderValidationError, Exception)):
-                    items_summary.append(
-                        ComparisonItemSnapshot(
-                            name=cl["name"],
-                            status="PROVIDER_UNAVAILABLE",
-                            error="Upstream provider failure",
-                        )
-                    )
-                else:
-                    idx = res.indicative_index
-                    items_summary.append(
-                        ComparisonItemSnapshot(
-                            name=res.location.name,
-                            status=res.status,
-                            indicative_index=idx.value,
-                            category=idx.category,
-                            dominant_pollutant=idx.dominant_pollutant,
-                            valid_time=res.temporal_governance.valid_time.isoformat(),
-                        )
-                    )
-                    if idx.status == "AVAILABLE" and idx.value is not None:
-                        avail_items.append((idx.value, res.location.name, idx.category))
-            cleanest_str = None
-            most_polluted_str = None
-            if len(avail_items) >= 2:
-                avail_items.sort(key=lambda t: t[0])
-                cleanest_str = f"{avail_items[0][1]} (INDICATIVE_MODEL_INDEX {avail_items[0][0]}, {avail_items[0][2]})"
-                most_polluted_str = f"{avail_items[-1][1]} (INDICATIVE_MODEL_INDEX {avail_items[-1][0]}, {avail_items[-1][2]})"
-            comparison_summary = ComparisonSummarySnapshot(
-                items=tuple(items_summary),
-                cleanest_location=cleanest_str,
-                most_polluted_location=most_polluted_str,
-            )
+        comparison_summary = await self._build_comparison_snapshot(req)
 
         inferred_activity, inferred_sensitivity = infer_chat_recommendation_context(req)
         eval_res = evaluate_assessment_recommendations(
@@ -1072,20 +1093,17 @@ class AIAssistantService:
                 eval_res=eval_res,
                 prompt_injection_detected=True,
             )
-            hist_sum = self._build_history_summary(envelope, "GUARDRAIL")
-            return AIChatResponse(
+            return self._build_attested_chat_response(
                 reply=reply,
-                grounded_in_data=True,
                 explanation_mode="deterministic_fallback",
                 model_used="deterministic-guardrail-engine",
                 llm_fallback_used=True,
                 llm_fallback_reason=injection_reason,
                 prompt_injection_detected=True,
-                verified_context=envelope,
+                envelope=envelope,
                 sources_cited=sources,
                 warnings=warnings,
-                history_summary=hist_sum,
-                reply_attestation=_compute_turn_attestation(hist_sum),
+                intent_label="GUARDRAIL",
             )
 
         scope = classify_chat_scope(req.message)
@@ -1094,20 +1112,17 @@ class AIAssistantService:
                 f"You're welcome! Let me know if you have any questions about the current "
                 f"modeled air quality, dominant pollutants, or activity precautions for {envelope.location_name}."
             )
-            hist_sum = self._build_history_summary(envelope, "ACKNOWLEDGEMENT")
-            return AIChatResponse(
+            return self._build_attested_chat_response(
                 reply=ack_reply,
-                grounded_in_data=True,
                 explanation_mode="deterministic_fallback",
                 model_used="deterministic-fallback",
                 llm_fallback_used=True,
                 llm_fallback_reason="Handled conversational acknowledgement deterministically.",
                 prompt_injection_detected=False,
-                verified_context=envelope,
+                envelope=envelope,
                 sources_cited=sources,
                 warnings=warnings,
-                history_summary=hist_sum,
-                reply_attestation=_compute_turn_attestation(hist_sum),
+                intent_label="ACKNOWLEDGEMENT",
             )
 
         if scope == "UNSUPPORTED_WEATHER":
@@ -1119,20 +1134,17 @@ class AIAssistantService:
                 f"(PM2.5, PM10, NO2, SO2, CO, O3) and indicative CPCB breakpoint guidance. "
                 f"Ask about the current Indicative Model Index, dominant pollutant, or outdoor activity precautions if helpful."
             )
-            hist_sum = self._build_history_summary(envelope, "UNSUPPORTED_WEATHER")
-            return AIChatResponse(
+            return self._build_attested_chat_response(
                 reply=weather_reply,
-                grounded_in_data=True,
                 explanation_mode="deterministic_fallback",
                 model_used="deterministic-fallback",
                 llm_fallback_used=True,
                 llm_fallback_reason="Question asked for unsupported weather/meteorology data outside CAMS pollutant scope.",
                 prompt_injection_detected=False,
-                verified_context=envelope,
+                envelope=envelope,
                 sources_cited=sources,
                 warnings=warnings,
-                history_summary=hist_sum,
-                reply_attestation=_compute_turn_attestation(hist_sum),
+                intent_label="UNSUPPORTED_WEATHER",
             )
 
         structured_selection, fallback_reason = await self._call_gemini_grounded(
@@ -1145,20 +1157,17 @@ class AIAssistantService:
                 envelope=envelope,
                 eval_res=eval_res,
             )
-            hist_sum = self._build_history_summary(envelope, structured_selection.response_intent)
-            return AIChatResponse(
+            return self._build_attested_chat_response(
                 reply=rendered_reply,
-                grounded_in_data=True,
                 explanation_mode="llm_grounded",
                 model_used=settings.llm_model,
                 llm_fallback_used=False,
                 llm_fallback_reason=None,
                 prompt_injection_detected=False,
-                verified_context=envelope,
+                envelope=envelope,
                 sources_cited=sources,
                 warnings=warnings,
-                history_summary=hist_sum,
-                reply_attestation=_compute_turn_attestation(hist_sum),
+                intent_label=structured_selection.response_intent,
             )
 
         det_reply = self._deterministic_grounded_reply(
@@ -1167,20 +1176,17 @@ class AIAssistantService:
             eval_res=eval_res,
             prompt_injection_detected=False,
         )
-        hist_sum = self._build_history_summary(envelope, "DETERMINISTIC")
-        return AIChatResponse(
+        return self._build_attested_chat_response(
             reply=det_reply,
-            grounded_in_data=True,
             explanation_mode="deterministic_fallback",
             model_used="deterministic-fallback",
             llm_fallback_used=True,
             llm_fallback_reason=fallback_reason,
             prompt_injection_detected=False,
-            verified_context=envelope,
+            envelope=envelope,
             sources_cited=sources,
             warnings=warnings,
-            history_summary=hist_sum,
-            reply_attestation=_compute_turn_attestation(hist_sum),
+            intent_label="DETERMINISTIC",
         )
 
 

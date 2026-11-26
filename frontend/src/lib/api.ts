@@ -151,6 +151,7 @@ export async function sendAIChat(params: {
   city?: string;
   latitude?: number;
   longitude?: number;
+  compare_locations?: Array<{ city?: string; latitude?: number; longitude?: number }>;
   activity?: string;
   sensitivity_preference?: string;
   duration?: string;
@@ -164,6 +165,9 @@ export async function sendAIChat(params: {
       city: params.city,
       latitude: params.latitude,
       longitude: params.longitude,
+      ...(params.compare_locations && params.compare_locations.length >= 2
+        ? { compare_locations: params.compare_locations }
+        : {}),
       activity: params.activity,
       sensitivity_preference: params.sensitivity_preference,
       duration: params.duration,

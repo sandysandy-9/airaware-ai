@@ -7,16 +7,18 @@ import {
   RefreshCw,
   User,
 } from "lucide-react";
-import { AirQualityPipelineResponse, AIChatMessage } from "../lib/types";
-import { SUGGESTED_QUESTIONS } from "../lib/constants";
+import { AirQualityPipelineResponse, AIChatMessage, CityInfo } from "../lib/types";
+import { SUGGESTED_QUESTIONS, POPULAR_CITIES } from "../lib/constants";
 import { sendAIChat } from "../lib/api";
 import {
   classifyApiErrorMessage,
+  extractComparisonTargets,
   MAX_CHAT_MESSAGE_CHARS,
 } from "../lib/chatHistory";
 
 interface AIChatDrawerProps {
   currentAirQuality: AirQualityPipelineResponse;
+  cities?: CityInfo[];
   activity?: string;
   sensitivityPreference?: string;
   duration?: string;
@@ -24,6 +26,7 @@ interface AIChatDrawerProps {
 
 export function AIChatDrawer({
   currentAirQuality,
+  cities,
   activity,
   sensitivityPreference,
   duration,
@@ -73,12 +76,23 @@ export function AIChatDrawer({
     setLoading(true);
 
     try {
+      const knownCities = cities && cities.length > 0 ? cities : POPULAR_CITIES;
+      const compareLocations = extractComparisonTargets(
+        text,
+        {
+          city: locationName,
+          latitude: currentAirQuality.coordinates.requested_latitude,
+          longitude: currentAirQuality.coordinates.requested_longitude,
+        },
+        knownCities
+      );
       // NEVER send current_context or comparison_context — backend forbids them.
       const resp = await sendAIChat({
         message: text,
         city: locationName,
         latitude: currentAirQuality.coordinates.requested_latitude,
         longitude: currentAirQuality.coordinates.requested_longitude,
+        compare_locations: compareLocations,
         activity,
         sensitivity_preference: sensitivityPreference,
         duration,
@@ -131,7 +145,7 @@ export function AIChatDrawer({
             <p className="text-xs text-slate-400">
               Context: {locationName} • {modelUsed}
               {explanationMode && (
-                <span className="ml-1.5 text-[10px] text-slate-500">
+                <span className="ml-1.5 text-[10px] text-slate-400">
                   ({explanationMode === "llm_grounded" ? "LLM Grounded" : "Deterministic Fallback"})
                 </span>
               )}
@@ -145,6 +159,7 @@ export function AIChatDrawer({
         {SUGGESTED_QUESTIONS.map((q, qIdx) => (
           <button
             key={qIdx}
+            type="button"
             onClick={() => handleSend(q)}
             disabled={loading}
             className="whitespace-nowrap px-3 py-1 rounded-xl bg-navy-850 hover:bg-navy-800 text-[11px] font-medium text-slate-300 hover:text-cyan-300 border border-navy-700/60 transition-colors shrink-0"
@@ -155,7 +170,7 @@ export function AIChatDrawer({
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto py-4 space-y-4 pr-1">
+      <div aria-live="polite" aria-label="AI conversation messages" className="flex-1 overflow-y-auto py-4 space-y-4 pr-1">
         {messages.map((m, i) => {
           const isUser = m.role === "user";
           return (
@@ -221,7 +236,7 @@ export function AIChatDrawer({
             if (validationError) setValidationError(null);
           }}
           placeholder="Ask about air quality, precautions, or pollutants..."
-          className="flex-1 bg-navy-850 border border-navy-700 rounded-2xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
+          className="flex-1 bg-navy-850 border border-navy-700 rounded-2xl px-4 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500 transition-colors"
           aria-label="Chat message input"
         />
         {input.length >= 800 && (

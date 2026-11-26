@@ -93,61 +93,28 @@ export function Navbar({
 
           {/* Navigation Links */}
           <nav aria-label="Main navigation" className="hidden lg:flex items-center space-x-1">
-            <button
-              onClick={() => setActiveTab("dashboard")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center space-x-1.5 ${
-                activeTab === "dashboard"
-                  ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/30"
-                  : "text-slate-300 hover:text-white hover:bg-navy-800/60"
-              }`}
-            >
-              <Activity className="w-3.5 h-3.5" />
-              <span>Dashboard</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("recommendations")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center space-x-1.5 ${
-                activeTab === "recommendations"
-                  ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/30"
-                  : "text-slate-300 hover:text-white hover:bg-navy-800/60"
-              }`}
-            >
-              <Activity className="w-3.5 h-3.5" />
-              <span>Action Studio</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("comparison")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center space-x-1.5 ${
-                activeTab === "comparison"
-                  ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/30"
-                  : "text-slate-300 hover:text-white hover:bg-navy-800/60"
-              }`}
-            >
-              <Layers className="w-3.5 h-3.5" />
-              <span>Comparison</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("historical")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center space-x-1.5 ${
-                activeTab === "historical"
-                  ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/30"
-                  : "text-slate-300 hover:text-white hover:bg-navy-800/60"
-              }`}
-            >
-              <History className="w-3.5 h-3.5" />
-              <span>Historical</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("ai-assistant")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center space-x-1.5 ${
-                activeTab === "ai-assistant"
-                  ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/30"
-                  : "text-slate-300 hover:text-white hover:bg-navy-800/60"
-              }`}
-            >
-              <Bot className="w-3.5 h-3.5" />
-              <span>AI Assistant</span>
-            </button>
+            {[
+              { id: "dashboard", label: "Dashboard", Icon: Activity },
+              { id: "recommendations", label: "Action Studio", Icon: Activity },
+              { id: "comparison", label: "Comparison", Icon: Layers },
+              { id: "historical", label: "Historical", Icon: History },
+              { id: "ai-assistant", label: "AI Assistant", Icon: Bot },
+            ].map(({ id, label, Icon }) => (
+              <button
+                key={id}
+                type="button"
+                aria-current={activeTab === id ? "page" : undefined}
+                onClick={() => setActiveTab(id)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center space-x-1.5 ${
+                  activeTab === id
+                    ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/30"
+                    : "text-slate-300 hover:text-white hover:bg-navy-800/60"
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{label}</span>
+              </button>
+            ))}
           </nav>
 
           {/* Action Icons */}

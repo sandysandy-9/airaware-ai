@@ -2,7 +2,7 @@
 
 from contextlib import asynccontextmanager
 import json
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -35,7 +35,48 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Environment-driven CORS configuration
+BASELINE_SECURITY_HEADERS = {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+}
+
+
+def apply_security_headers(response: Response, path: str) -> Response:
+    """Attach canonical security headers and API no-store caching directive."""
+    for name, value in BASELINE_SECURITY_HEADERS.items():
+        response.headers.setdefault(name, value)
+    if path.startswith("/api/"):
+        response.headers.setdefault("Cache-Control", "no-store")
+    return response
+
+
+def apply_cors_headers(response: Response, request: Request) -> Response:
+    """Apply configured CORS headers on error responses that bypass CORSMiddleware."""
+    origin = request.headers.get("origin")
+    if not origin:
+        return response
+
+    allow_all = "*" in settings.allowed_origins
+    if allow_all:
+        response.headers.setdefault("Access-Control-Allow-Origin", "*")
+        if allow_creds:
+            response.headers.setdefault("Access-Control-Allow-Credentials", "true")
+    elif origin in settings.allowed_origins:
+        response.headers.setdefault("Access-Control-Allow-Origin", origin)
+        if allow_creds:
+            response.headers.setdefault("Access-Control-Allow-Credentials", "true")
+
+    existing_vary = response.headers.get("Vary", "")
+    vary_tokens = [v.strip() for v in existing_vary.split(",") if v.strip()]
+    if "Origin" not in vary_tokens:
+        vary_tokens.append("Origin")
+        response.headers["Vary"] = ", ".join(vary_tokens)
+    return response
+
+
+# Environment-driven CORS configuration (added first so security middleware wraps preflight responses too)
 allow_creds = "*" not in settings.allowed_origins
 app.add_middleware(
     CORSMiddleware,
@@ -46,17 +87,26 @@ app.add_middleware(
 )
 
 
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    """Attach baseline security headers to every HTTP response without altering CORS."""
+    response = await call_next(request)
+    return apply_security_headers(response, request.url.path)
+
+
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    """Safe global error handler suppressing raw tracebacks from external API responses."""
+    """Safe global error handler suppressing raw tracebacks while preserving security and CORS headers."""
     logger.error("Unhandled error on %s %s: %s", request.method, request.url.path, type(exc).__name__)
-    return JSONResponse(
+    response = JSONResponse(
         status_code=500,
         content={
             "error": "InternalServerError",
             "message": "An unexpected internal error occurred while processing the air quality request.",
         },
     )
+    apply_security_headers(response, request.url.path)
+    return apply_cors_headers(response, request)
 
 
 @app.get("/health", tags=["System"])

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   AreaChart,
   Area,
@@ -10,7 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { History, Calendar, TrendingUp, RefreshCw, AlertCircle } from "lucide-react";
+import { RefreshCw, AlertCircle } from "lucide-react";
 import { HistoricalTrendsResponse, HistoricalPoint } from "../lib/types";
 import { fetchHistoricalTrends } from "../lib/api";
 
@@ -24,8 +24,10 @@ export function HistoricalCharts({ city }: HistoricalChartsProps) {
   const [trends, setTrends] = useState<HistoricalTrendsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const requestSeqRef = useRef(0);
 
-  const loadTrends = async () => {
+  const loadTrends = useCallback(async () => {
+    const seq = ++requestSeqRef.current;
     setLoading(true);
     setError(null);
     try {
@@ -33,17 +35,24 @@ export function HistoricalCharts({ city }: HistoricalChartsProps) {
         city,
         pastDays,
       });
-      setTrends(res);
-    } catch (err: any) {
-      setError(err.message || "Failed to load historical data");
+      if (seq === requestSeqRef.current) {
+        setTrends(res);
+      }
+    } catch (err: unknown) {
+      if (seq === requestSeqRef.current) {
+        const msg = err instanceof Error ? err.message : "Failed to load historical data";
+        setError(msg);
+      }
     } finally {
-      setLoading(false);
+      if (seq === requestSeqRef.current) {
+        setLoading(false);
+      }
     }
-  };
+  }, [city, pastDays]);
 
   useEffect(() => {
     loadTrends();
-  }, [city, pastDays]);
+  }, [loadTrends]);
 
   const metricsConfig: Record<string, { label: string; unit: string; color: string }> = {
     aqi: { label: "Indicative Index", unit: "Index", color: "#f97316" },
@@ -90,7 +99,11 @@ export function HistoricalCharts({ city }: HistoricalChartsProps) {
         </div>
 
         {/* Range Selector */}
-        <div className="flex items-center space-x-1.5 bg-navy-850 p-1 rounded-xl border border-navy-700/60 self-start sm:self-auto">
+        <div
+          role="group"
+          aria-label="Historical time window"
+          className="flex items-center space-x-1.5 bg-navy-850 p-1 rounded-xl border border-navy-700/60 self-start sm:self-auto"
+        >
           {[
             { days: 1, label: "24h" },
             { days: 7, label: "7 Days" },
@@ -99,11 +112,13 @@ export function HistoricalCharts({ city }: HistoricalChartsProps) {
           ].map((item) => (
             <button
               key={item.days}
+              type="button"
+              aria-pressed={pastDays === item.days}
               onClick={() => setPastDays(item.days)}
               className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
                 pastDays === item.days
                   ? "bg-cyan-500 text-slate-950 shadow-sm"
-                  : "text-slate-400 hover:text-white"
+                  : "text-slate-300 hover:text-white"
               }`}
             >
               {item.label}
@@ -113,21 +128,42 @@ export function HistoricalCharts({ city }: HistoricalChartsProps) {
       </div>
 
       {/* Metric Switcher Tabs */}
-      <div className="flex flex-wrap gap-2">
+      <div role="group" aria-label="Historical metric selector" className="flex flex-wrap gap-2">
         {Object.entries(metricsConfig).map(([key, cfg]) => (
           <button
             key={key}
+            type="button"
+            aria-pressed={activeMetric === key}
             onClick={() => setActiveMetric(key)}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
               activeMetric === key
                 ? "bg-navy-800 text-white border-cyan-500/50 shadow-sm"
-                : "bg-navy-850/60 text-slate-400 hover:text-slate-200 border-navy-700/40"
+                : "bg-navy-850/60 text-slate-300 hover:text-white border-navy-700/40"
             }`}
           >
             <span style={{ color: activeMetric === key ? cfg.color : undefined }}>●</span> {cfg.label}
           </button>
         ))}
       </div>
+
+      {error && (
+        <div
+          role="alert"
+          className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-between text-xs text-amber-300"
+        >
+          <div className="flex items-center space-x-2">
+            <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+            <span>{error}</span>
+          </div>
+          <button
+            type="button"
+            onClick={loadTrends}
+            className="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 font-semibold text-amber-200"
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
       {/* Statistics Bar */}
       <div className="grid grid-cols-3 gap-4">
@@ -167,13 +203,13 @@ export function HistoricalCharts({ city }: HistoricalChartsProps) {
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
               <XAxis
                 dataKey="time"
-                stroke="#64748b"
+                stroke="#94a3b8"
                 fontSize={10}
                 tickLine={false}
                 axisLine={{ stroke: "#334155" }}
               />
               <YAxis
-                stroke="#64748b"
+                stroke="#94a3b8"
                 fontSize={10}
                 tickLine={false}
                 axisLine={{ stroke: "#334155" }}

@@ -16,6 +16,29 @@ def _parse_origins(raw: str) -> List[str]:
     return origins or ["http://localhost:3000", "http://127.0.0.1:3000"]
 
 
+def _parse_trusted_proxies(raw: str) -> List[str]:
+    return [p.strip() for p in raw.split(",") if p.strip()]
+
+
+def _validate_origin_url(origin: str, *, is_production: bool) -> None:
+    if origin == "*":
+        if is_production:
+            raise ValueError(
+                "Wildcard CORS origin ('*') is forbidden when ENVIRONMENT=production. "
+                "Set ALLOWED_ORIGINS to explicit deployed HTTPS frontend origin(s)."
+            )
+        return
+    lowered = origin.lower()
+    if not lowered.startswith(("https://", "http://")):
+        raise ValueError(f"Invalid CORS origin scheme '{origin}'; expected http:// or https://.")
+    if is_production and lowered.startswith("http://"):
+        host = lowered[7:].split("/")[0].split(":")[0]
+        if host not in {"localhost", "127.0.0.1"}:
+            raise ValueError(
+                f"Insecure HTTP CORS origin '{origin}' is forbidden when ENVIRONMENT=production; use HTTPS."
+            )
+
+
 _DISALLOWED_ATTESTATION_PLACEHOLDERS = frozenset(
     {
         "changeme",
@@ -121,6 +144,12 @@ class Settings:
     rate_limit_requests_per_minute: int = field(
         default_factory=lambda: int(os.getenv("AIRAWARE_RATE_LIMIT_PER_MIN", "120"))
     )
+    rate_limit_max_tracked_clients: int = field(
+        default_factory=lambda: int(os.getenv("AIRAWARE_RATE_LIMIT_MAX_CLIENTS", "10000"))
+    )
+    trusted_proxy_ips: List[str] = field(
+        default_factory=lambda: _parse_trusted_proxies(os.getenv("TRUSTED_PROXY_IPS", ""))
+    )
 
     # Stage 3.2 Grounded AI Assistant / LLM Provider Settings (Optional; secret excluded from summaries)
     llm_provider: str = field(
@@ -152,13 +181,22 @@ class Settings:
             "attestation_secret",
             validate_attestation_secret(self.attestation_secret),
         )
-        if self.environment.strip().lower() == "production":
+        if self.open_meteo_connect_timeout_seconds <= 0 or self.open_meteo_read_timeout_seconds <= 0:
+            raise ValueError("Provider timeout values must be strictly positive.")
+        if self.llm_timeout_seconds <= 0:
+            raise ValueError("AIRAWARE_LLM_TIMEOUT_SECONDS must be strictly positive.")
+        if self.max_supported_gap_seconds <= 0:
+            raise ValueError("AIRAWARE_MAX_SUPPORTED_GAP_SECONDS must be strictly positive.")
+        if self.cache_ttl_seconds < 0 or self.cache_max_entries < 1:
+            raise ValueError("Cache TTL must be >= 0 and AIRAWARE_CACHE_MAX_ENTRIES >= 1.")
+        if self.rate_limit_requests_per_minute < 1 or self.rate_limit_max_tracked_clients < 1:
+            raise ValueError("Rate-limit settings must be >= 1.")
+
+        is_prod = self.environment.strip().lower() == "production"
+        if is_prod:
             object.__setattr__(self, "debug", False)
-            if "*" in self.allowed_origins:
-                raise ValueError(
-                    "Wildcard CORS origin ('*') is forbidden when ENVIRONMENT=production. "
-                    "Set ALLOWED_ORIGINS to explicit deployed HTTPS frontend origin(s)."
-                )
+        for origin in self.allowed_origins:
+            _validate_origin_url(origin, is_production=is_prod)
 
     def safe_summary(self) -> Dict[str, object]:
         """Return non-sensitive settings metadata safe for diagnostics."""

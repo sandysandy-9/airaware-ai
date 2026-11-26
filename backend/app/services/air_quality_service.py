@@ -2,7 +2,7 @@
 
 import asyncio
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from app.core.config import settings
 from app.core.logging import get_logger
@@ -151,6 +151,23 @@ class AirQualityPipelineService:
             target_valid_time_utc=target_valid,
             cache_hit=cache_hit,
         )
+
+    async def assess_locations(
+        self,
+        resolved_locs: Sequence[Dict[str, Any]],
+    ) -> List[Any]:
+        """Concurrently run authoritative assessments across multiple resolved locations."""
+        tasks = [
+            self.assess_location(
+                location_name=loc["name"],
+                city=loc.get("city", loc["name"]),
+                state=loc.get("state"),
+                latitude=loc["lat"],
+                longitude=loc["lon"],
+            )
+            for loc in resolved_locs
+        ]
+        return list(await asyncio.gather(*tasks, return_exceptions=True))
 
     def build_assessment_from_normalized(
         self,
@@ -350,6 +367,24 @@ def _derive_freshness(normalized: NormalizedProviderSeries, cache_hit: bool) -> 
         cache_hit=cache_hit,
         disclaimer=f"Model cycle initialized {age_h:.2f}h before retrieval (model-derived grid data).",
     )
+
+
+def rank_available_assessments(
+    available_assessments: Sequence[AirQualityPipelineResponse],
+) -> Tuple[Optional[str], Optional[str]]:
+    """Return formatted (lowest, highest) indicative index summary labels when >= 2 locations qualify."""
+    valid = [
+        a
+        for a in available_assessments
+        if a.indicative_index.status == "AVAILABLE" and a.indicative_index.value is not None
+    ]
+    if len(valid) < 2:
+        return None, None
+    ordered = sorted(valid, key=lambda a: a.indicative_index.value or 0)
+    first, last = ordered[0], ordered[-1]
+    cleanest = f"{first.location.name} (INDICATIVE_MODEL_INDEX {first.indicative_index.value}, {first.indicative_index.category})"
+    most_polluted = f"{last.location.name} (INDICATIVE_MODEL_INDEX {last.indicative_index.value}, {last.indicative_index.category})"
+    return cleanest, most_polluted
 
 
 air_quality_service = AirQualityPipelineService()

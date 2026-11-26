@@ -84,9 +84,9 @@ export function LocationComparison() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-navy-800">
         <div>
           <div className="flex items-center space-x-2">
-            <h3 className="text-xl font-bold text-white tracking-tight">
+            <h2 className="text-xl font-bold text-white tracking-tight">
               Location Comparison Matrix
-            </h3>
+            </h2>
             <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 whitespace-nowrap shrink-0">
               Indicative Model
             </span>

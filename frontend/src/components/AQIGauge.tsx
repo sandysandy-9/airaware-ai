@@ -7,7 +7,6 @@ import {
   Clock,
   Database,
   ChevronRight,
-  ShieldAlert,
   Flame,
   MapPin,
 } from "lucide-react";

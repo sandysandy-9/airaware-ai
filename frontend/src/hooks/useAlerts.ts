@@ -140,11 +140,6 @@ export function useAlerts() {
     } catch {}
   };
 
-  const saveRules = (updated: AlertRule[]) => {
-    setRules(updated);
-    persistRules(updated);
-  };
-
   const addRule = (city: string, thresholdAqi: number) => {
     const newRule: AlertRule = {
       id: `rule-${Date.now()}`,

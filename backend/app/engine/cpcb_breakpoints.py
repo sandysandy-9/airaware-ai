@@ -4,7 +4,7 @@ Source: Central Pollution Control Board, Ministry of Environment, Forest and Cli
 Government of India - "National Air Quality Index" Report (October 2014 / 2015 revisions).
 """
 
-from typing import Dict, List, NamedTuple, Optional
+from typing import Dict, List, NamedTuple
 
 
 class BreakpointRange(NamedTuple):

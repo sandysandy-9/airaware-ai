@@ -92,7 +92,7 @@ export function HistoricalCharts({ city }: HistoricalChartsProps) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-navy-800">
         <div>
-          <h3 className="text-xl font-bold text-white tracking-tight">Historical Air Quality Trends</h3>
+          <h2 className="text-xl font-bold text-white tracking-tight">Historical Air Quality Trends</h2>
           <p className="text-xs text-slate-400 mt-0.5">
             Model-derived hourly atmospheric estimates (Copernicus CAMS) for {trends?.location.name || city}
           </p>
@@ -191,7 +191,14 @@ export function HistoricalCharts({ city }: HistoricalChartsProps) {
           <span className="text-xs text-slate-400">Loading model-derived historical atmospheric estimates...</span>
         </div>
       ) : chartData.length > 0 ? (
-        <div className="h-72 w-full pt-4">
+        <div
+          role="region"
+          aria-label={`Historical ${currentCfg.label} chart for ${trends?.location.name || city} over the past ${pastDays === 1 ? "24 hours" : `${pastDays} days`}`}
+          className="h-72 w-full pt-4"
+        >
+          <p className="sr-only">
+            {`Displayed ${chartData.length} hourly model-derived ${currentCfg.label} (${currentCfg.unit}) estimates for ${trends?.location.name || city} from ${chartData[0].fullTime} to ${chartData[chartData.length - 1].fullTime}. Period average: ${avg} ${currentCfg.unit}; Peak: ${max} ${currentCfg.unit}; Lowest: ${min} ${currentCfg.unit}.`}
+          </p>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>

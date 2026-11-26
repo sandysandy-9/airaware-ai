@@ -1,7 +1,7 @@
 """Schemas for Stage 3.2 Server-Grounded AI Air Quality Assistant (Deeply Immutable Snapshots)."""
 
 from types import MappingProxyType
-from typing import Annotated, Any, Dict, List, Literal, Mapping, Optional, Tuple
+from typing import Annotated, Dict, List, Literal, Mapping, Optional, Tuple
 import unicodedata
 from pydantic import (
     AfterValidator,

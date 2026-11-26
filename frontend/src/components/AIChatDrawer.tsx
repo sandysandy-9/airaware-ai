@@ -135,9 +135,9 @@ export function AIChatDrawer({
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <h3 className="text-base font-bold text-white tracking-tight">
+              <h2 className="text-base font-bold text-white tracking-tight">
                 AI Environmental Assistant
-              </h3>
+              </h2>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 whitespace-nowrap shrink-0">
                 Server-Grounded
               </span>

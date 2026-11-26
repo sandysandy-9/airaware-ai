@@ -1,7 +1,7 @@
 """Provider factory and standard Indian cities registry."""
 
 import re
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 import unicodedata
 from app.providers.base import BaseAirQualityProvider
 from app.providers.open_meteo import OpenMeteoProvider

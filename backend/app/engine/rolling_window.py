@@ -1,6 +1,6 @@
 """Frozen Stage 1 v2.4.3 Piecewise-Linear Trapezoidal Rolling-Window Engine."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 import math
 from typing import Dict, List, Literal, Optional, Tuple
 from pydantic import BaseModel, Field

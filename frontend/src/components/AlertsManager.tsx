@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { X, Bell, Plus, Trash2 } from "lucide-react";
 import { AlertRule, CityInfo, TriggeredAlert } from "../lib/types";
 import { POPULAR_CITIES } from "../lib/constants";
@@ -32,6 +32,24 @@ export function AlertsManager({
   const [selectedCity, setSelectedCity] = useState("New Delhi");
   const [threshold, setThreshold] = useState(200);
   const [activeTab, setActiveTab] = useState<"rules" | "history">("rules");
+  const rulesTabRef = useRef<HTMLButtonElement>(null);
+  const historyTabRef = useRef<HTMLButtonElement>(null);
+
+  const handleTabKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft" || e.key === "Home" || e.key === "End") {
+      e.preventDefault();
+      const nextTab: "rules" | "history" =
+        e.key === "Home"
+          ? "rules"
+          : e.key === "End"
+          ? "history"
+          : activeTab === "rules"
+          ? "history"
+          : "rules";
+      setActiveTab(nextTab);
+      (nextTab === "rules" ? rulesTabRef.current : historyTabRef.current)?.focus();
+    }
+  };
 
   const cityOptions =
     cities && cities.length > 0
@@ -78,10 +96,14 @@ export function AlertsManager({
       {/* Tab switch */}
       <div role="tablist" aria-label="Alert manager sections" className="flex rounded-xl bg-navy-950 p-1 border border-navy-800">
         <button
+          ref={rulesTabRef}
+          id="alerts-tab-rules"
           type="button"
           role="tab"
           aria-selected={activeTab === "rules"}
+          aria-controls="alerts-panel-rules"
           onClick={() => setActiveTab("rules")}
+          onKeyDown={handleTabKeyDown}
           className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             activeTab === "rules" ? "bg-navy-800 text-white shadow-sm" : "text-slate-400 hover:text-white"
           }`}
@@ -89,10 +111,14 @@ export function AlertsManager({
           Alert Rules ({rules.length})
         </button>
         <button
+          ref={historyTabRef}
+          id="alerts-tab-history"
           type="button"
           role="tab"
           aria-selected={activeTab === "history"}
+          aria-controls="alerts-panel-history"
           onClick={() => setActiveTab("history")}
+          onKeyDown={handleTabKeyDown}
           className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             activeTab === "history" ? "bg-navy-800 text-white shadow-sm" : "text-slate-400 hover:text-white"
           }`}
@@ -102,7 +128,12 @@ export function AlertsManager({
       </div>
 
       {activeTab === "rules" ? (
-        <div className="space-y-4">
+        <div
+          id="alerts-panel-rules"
+          role="tabpanel"
+          aria-labelledby="alerts-tab-rules"
+          className="space-y-4"
+        >
           {/* Create New Rule Form */}
           <form onSubmit={handleAdd} className="bg-navy-850 p-4 rounded-2xl border border-navy-700/60 space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400">Add Alert Rule</h4>
@@ -204,7 +235,12 @@ export function AlertsManager({
         </div>
       ) : (
         /* Alert History View */
-        <div className="space-y-3">
+        <div
+          id="alerts-panel-history"
+          role="tabpanel"
+          aria-labelledby="alerts-tab-history"
+          className="space-y-3"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-400">Triggered Threshold Notifications</span>
             {history.length > 0 && (

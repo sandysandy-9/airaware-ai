@@ -29,10 +29,10 @@ export function TriggeredRulesPanel({ rules }: { rules: TriggeredRule[] }) {
   if (!rules || rules.length === 0) return null;
   return (
     <div className="bg-navy-850/80 border border-navy-700/60 rounded-2xl p-4 space-y-2.5">
-      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
         <FileText className="w-4 h-4 text-slate-400" />
         <span>Triggered Rules ({rules.length})</span>
-      </h4>
+      </h3>
       <ul className="space-y-2">
         {rules.map((rule, idx) => {
           const statusRaw = (rule.status || "").trim();
@@ -171,9 +171,9 @@ export function RecommendationStudio({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-navy-800">
         <div>
           <div className="flex items-center space-x-2">
-            <h3 className="text-xl font-bold text-white tracking-tight">
+            <h2 className="text-xl font-bold text-white tracking-tight">
               Personalised Action Studio
-            </h3>
+            </h2>
             <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
               Deterministic Rules Engine
             </span>
@@ -197,10 +197,10 @@ export function RecommendationStudio({
       {/* Selectors */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="space-y-2">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
             <Flame className="w-3.5 h-3.5 text-cyan-400" />
             <span>1. Planned Activity</span>
-          </h4>
+          </h3>
           <div role="group" aria-label="Planned Activity" className="grid grid-cols-2 gap-2">
             {ACTIVITY_OPTIONS.map((act) => (
               <button
@@ -221,10 +221,10 @@ export function RecommendationStudio({
         </div>
 
         <div className="space-y-2">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
             <Heart className="w-3.5 h-3.5 text-rose-400" />
             <span>2. Sensitivity Cohort</span>
-          </h4>
+          </h3>
           <div role="group" aria-label="Sensitivity Cohort" className="space-y-1.5">
             {VULNERABILITY_OPTIONS.map((vuln) => (
               <button
@@ -246,10 +246,10 @@ export function RecommendationStudio({
         </div>
 
         <div className="space-y-2">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5 text-amber-400" />
             <span>3. Expected Duration</span>
-          </h4>
+          </h3>
           <div role="group" aria-label="Expected Duration" className="space-y-2">
             {DURATION_OPTIONS.map((dur) => (
               <button
@@ -304,10 +304,10 @@ export function RecommendationStudio({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Precautions */}
             <div className="bg-navy-850/80 border border-navy-700/60 rounded-2xl p-4 space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-cyan-400" />
                 <span>Actionable Precautions</span>
-              </h4>
+              </h3>
               <ul className="space-y-2">
                 {recommendations.actionable_precautions.map((p, idx) => (
                   <li
@@ -324,10 +324,10 @@ export function RecommendationStudio({
             <div className="space-y-4">
               {/* Mask */}
               <div className="bg-navy-850/80 border border-navy-700/60 rounded-2xl p-4 space-y-2">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
                   <AlertTriangle className="w-4 h-4 text-amber-400" />
                   <span>Protective Mask Guidance</span>
-                </h4>
+                </h3>
                 <p className="text-xs text-slate-200">
                   {recommendations.protective_gear ||
                     "No special mask required for healthy adults."}
@@ -336,10 +336,10 @@ export function RecommendationStudio({
 
               {/* Indoor */}
               <div className="bg-navy-850/80 border border-navy-700/60 rounded-2xl p-4 space-y-2">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
                   <Home className="w-4 h-4 text-emerald-400" />
                   <span>Indoor Environment Advisory</span>
-                </h4>
+                </h3>
                 <p className="text-xs text-slate-200">{recommendations.indoor_guidance}</p>
               </div>
             </div>

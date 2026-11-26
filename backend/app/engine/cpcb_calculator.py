@@ -13,13 +13,12 @@ Enforces the official CPCB rule:
 from decimal import Decimal, ROUND_HALF_UP
 import math
 from typing import Dict, List, Optional, Tuple, Union
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from app.engine.cpcb_breakpoints import (
     AQI_CATEGORIES,
     CPCB_BREAKPOINTS,
     POLLUTANT_INFO,
-    BreakpointRange,
 )
 
 

@@ -89,6 +89,13 @@ test("A11Y-01: AlertsManager renders WCAG dialog semantics, labelled fields, tab
   assert.match(html, /aria-label="Close threshold alert manager"/);
   assert.match(html, /role="tablist"/);
   assert.match(html, /role="tab"/);
+  assert.match(html, /id="alerts-tab-rules"/);
+  assert.match(html, /aria-controls="alerts-panel-rules"/);
+  assert.match(html, /id="alerts-tab-history"/);
+  assert.match(html, /aria-controls="alerts-panel-history"/);
+  assert.match(html, /id="alerts-panel-rules"/);
+  assert.match(html, /role="tabpanel"/);
+  assert.match(html, /aria-labelledby="alerts-tab-rules"/);
   assert.match(html, /for="alert-city-select"/);
   assert.match(html, /id="alert-city-select"/);
   assert.match(html, /for="alert-threshold-range"/);
@@ -138,6 +145,88 @@ test("A11Y-02 & CQ-03: Navbar aria-current, skip link, h1 landmark, and transfor
   assert.match(pageSrc, /<h1\b/);
   const cssSrc = fs.readFileSync(path.resolve("src/app/globals.css"), "utf8");
   assert.doesNotMatch(cssSrc, /@keyframes fadeIn[\s\S]*transform:/);
+  assert.match(cssSrc, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
+});
+
+test("A11Y-05: Secondary tabs maintain H1->H2 heading hierarchy and HistoricalCharts renders accessible chart summary", () => {
+  const rechartsStub = new Proxy(
+    {},
+    {
+      get: (_t, prop) => (props) =>
+        React.createElement("div", { "data-recharts": String(prop) }, props?.children),
+    }
+  );
+  const { HistoricalCharts } = loadTsModule("src/components/HistoricalCharts.tsx", {
+    recharts: rechartsStub,
+    "../lib/api": { fetchHistoricalTrends: async () => ({ data_points: [] }) },
+  });
+  const { LocationComparison } = loadTsModule("src/components/LocationComparison.tsx", {
+    "../lib/constants": constantsMod,
+    "../lib/comparison": loadTsModule("src/lib/comparison.ts"),
+    "../lib/api": { fetchCities: async () => [], fetchComparison: async () => ({}) },
+  });
+  const { RecommendationStudio } = loadTsModule("src/components/RecommendationStudio.tsx", {
+    "../lib/constants": constantsMod,
+    "../lib/api": { fetchRecommendations: async () => ({}) },
+  });
+  const { AIChatDrawer } = loadTsModule("src/components/AIChatDrawer.tsx", {
+    "../lib/constants": constantsMod,
+    "../lib/chatHistory": chatHistoryMod,
+    "../lib/api": { sendAIChat: async () => ({}) },
+  });
+
+  const dummyAq = {
+    location: { name: "New Delhi", city: "New Delhi", state: "Delhi", latitude: 28.61, longitude: 77.21 },
+    coordinates: { requested_latitude: 28.61, requested_longitude: 77.21 },
+    indicative_index: { value: 210, category: "POOR", color: "#F97316", status: "AVAILABLE" },
+  };
+
+  const histEmptyHtml = renderToStaticMarkup(React.createElement(HistoricalCharts, { city: "New Delhi" }));
+  const cmpHtml = renderToStaticMarkup(React.createElement(LocationComparison));
+  const recHtml = renderToStaticMarkup(React.createElement(RecommendationStudio, { currentAirQuality: dummyAq }));
+  const chatHtml = renderToStaticMarkup(React.createElement(AIChatDrawer, { currentAirQuality: dummyAq }));
+
+  for (const [name, markup] of [
+    ["HistoricalCharts", histEmptyHtml],
+    ["LocationComparison", cmpHtml],
+    ["RecommendationStudio", recHtml],
+    ["AIChatDrawer", chatHtml],
+  ]) {
+    assert.match(markup, /<h2\b/, `${name} must render an <h2> section heading`);
+  }
+  assert.doesNotMatch(recHtml, /<h4\b/, "RecommendationStudio must not skip <h3> before subheadings");
+
+  // Render HistoricalCharts with populated data points via React.useState hook override
+  let stateCall = 0;
+  const populatedTrends = {
+    location: { name: "New Delhi" },
+    data_source: "Open-Meteo CAMS Global",
+    note: "Indicative model estimates",
+    data_points: [
+      { timestamp: "2026-11-26T10:00:00+00:00", aqi: 200, dominant_pollutant: "pm25" },
+      { timestamp: "2026-11-26T11:00:00+00:00", aqi: 240, dominant_pollutant: "pm25" },
+    ],
+  };
+  const seededReact = {
+    ...React,
+    useState(init) {
+      const slot = stateCall++;
+      if (slot === 2) return [populatedTrends, () => {}];
+      return [typeof init === "function" ? init() : init, () => {}];
+    },
+  };
+  const { HistoricalCharts: SeededHistoricalCharts } = loadTsModule("src/components/HistoricalCharts.tsx", {
+    react: seededReact,
+    recharts: rechartsStub,
+    "../lib/api": { fetchHistoricalTrends: async () => populatedTrends },
+  });
+  const histPopulatedHtml = renderToStaticMarkup(
+    React.createElement(SeededHistoricalCharts, { city: "New Delhi" })
+  );
+  assert.match(histPopulatedHtml, /role="region"/);
+  assert.match(histPopulatedHtml, /aria-label="Historical Indicative Index chart for New Delhi over the past 7 days"/);
+  assert.match(histPopulatedHtml, /class="sr-only"[^>]*>Displayed 2 hourly model-derived Indicative Index \(Index\) estimates for New Delhi/);
+  assert.match(histPopulatedHtml, /Period average: 220\.0 Index; Peak: 240\.0 Index; Lowest: 200\.0 Index\./);
 });
 
 test("SEC-03: sanitizeAlertRules and sanitizeAlertHistory reject malformed localStorage records", () => {

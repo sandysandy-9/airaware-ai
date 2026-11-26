@@ -9,7 +9,7 @@ from app.core.logging import get_logger
 from app.engine.cpcb_breakpoints import POLLUTANT_INFO
 from app.engine.indicative_index import IndicativeModelIndexResult, compute_indicative_model_index
 from app.engine.rolling_window import POLLUTANT_WINDOW_HOURS, RollingWindowResult, integrate_rolling_window
-from app.providers.models import NormalizedProviderSeries, ProviderError, ProviderValidationError
+from app.providers.models import NormalizedProviderSeries
 from app.providers.open_meteo import OpenMeteoProvider, normalize_open_meteo_response
 from app.schemas.air_quality import (
     AirQualityPipelineResponse,
